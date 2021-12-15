@@ -140,10 +140,11 @@
 						<h4>在這裡先看看你想與老師約的時間吧！<br>如果老師的狀態是可以預約的，那你可以登記並等待老師審核。</h4>
 						<span></span>
 					</div>
-					<form class="form" name="ChangePage" method="post" action="book.php">
-						<table>
+					<table>
+						<form class="form" name="ChangePage" method="post" action="BookCheck.php">
 							<?php 
 								require("conn_mysql.php");
+								$week=date("w");
 								if(isset($_POST['today'])){//如果是按鈕進入 檢查是上周還是下周
 									if(isset($_POST['PgeUp']))
 										$today=$_POST['today']+7;
@@ -151,10 +152,16 @@
 										$today=$_POST['today']-7;
 									else if(isset($_POST['PgeToday']))
 										$today=0;
+									else if(isset($_POST['book'])){//判斷是不是送出預約
+										//送出預約!
+										echo $_POST['today'];
+										echo "<br>";
+										echo $week;
+										$today=0;
+									}
 								}
-								else//如果是剛進入的話 就顯示今天
-									$today=0;
-								$week=date("w");
+								else
+									$today=0;//如果是剛進入的話 就顯示今天
 							?> 
 							
 							<tr>
@@ -186,26 +193,82 @@
 									//SELECT * FROM `Appointment` WHERE `_ID`="20211207_01"
 									for($tmp=(-$week);$tmp<7-$week;$tmp++){//今天前本周內
 										$isfind=false;
-										$sql_query_data="SELECT * FROM `Appointment` WHERE `_ID`=\"".date("Ymd",strtotime("+".($today+$tmp)." day"))."_".str_pad(($Time-7),2,"0",STR_PAD_LEFT)."\"";
+										$sql_query_data="SELECT * FROM `Appointment` WHERE `_ID` LIKE \"%".date("Ymd",strtotime("+".($today+$tmp)." day"))."_".str_pad(($Time-7),2,"0",STR_PAD_LEFT)."\"";
+										//echo $sql_query_data."<br>";
 										$data_result=mysqli_query($db_link,$sql_query_data) or die("查詢失敗");
 										while($row=mysqli_fetch_array($data_result)){
-											if($tmp==0 && $today==0)
-												echo "<th style=\"background-color:#F5FF53;\">".$row[1]."</th>";
-											else
-												echo "<th>".$row[1]."</th>";
+											if($tmp==0 && $today==0){
+												if($_COOKIE['Bear-Interview_Status']=="管理員")
+													echo "<th style=\"background-color:#F5FF53;\">".$row[1]."</th>";
+												else
+													echo "<th style=\"background-color:#F5FF53;\">已有人預約</th>";
+											}
+											else{
+												if($_COOKIE['Bear-Interview_Status']=="管理員")
+													echo "<th>".$row[1]."</th>";
+												else
+													echo "<th>已有人預約</th>";
+											}
 											$isfind=true;
 											break;
 										}
 										if($isfind==false){
+											$value=date("Ymd",strtotime("+".($today+$tmp)." day"))."_".str_pad(($Time-7),2,"0",STR_PAD_LEFT);//產生資料庫對應ID
 											if($tmp==0 && $today==0)
 												echo "<th style=\"background-color:#F5FF53;\"></th>";
-											else
+												else if($today==0 && $tmp>=0)//本周
+													echo "<th><input  type=\"checkbox\" name=$value></input></th>";//如果可預約 產生checkbox
+												else if($today>0)//未來周
+													echo "<th><input  type=\"checkbox\" name=$value></input></th>";//如果可預約 產生checkbox
+											else//過去的日子不能預約
 												echo "<th></th>";
 										}
 									}
 									echo "</tr>";
 								}
 							?>
+							<tr style="padding:1%;border: none;">
+								<th style="padding:1%;border: none;"></th>
+								<th colspan="7"style="padding:1%;border: none;">
+									<h3>
+										有哪些人(簡易備註即可)&nbsp;<textarea name="Teams" style = "resize:none;width:40%;height:40%;" ></textarea><br><br>
+										地點
+										<select name="Venue">
+											<option value="辦公室">辦公室</option>
+											<option value="實驗室">實驗室</option>
+											<option value="C311">C311</option>
+											<option value="C419">C419</option>
+											<option value="C506">C506</option>
+										<?php
+											if ($_COOKIE['Bear-Interview_Status']=="管理員"){//增加老師才可以選的選項
+												echo "<option value=\"不在學校\">不在學校</option>";
+											}
+										?>
+										</select>&nbsp;&nbsp;
+										項目
+										<select name="Class">
+											<option value="導生班晤談">導生班晤談</option>
+											<option value="專題討論">專題討論</option>
+											<option value="課程討論">課程討論</option>
+											<?php
+												if ($_COOKIE['Bear-Interview_Status']=="管理員")//增加老師才可以選的選項
+												{
+													echo "<option value=\"開會\">開會</option>";
+													echo "<option value=\"出差\">出差</option>";
+													echo "<option value=\"上課\">上課</option>";		
+												}
+											?>
+											<option value="其他">其他</option>
+										</select>
+										<input type="hidden" name="today" value="<?php echo $today;?>">
+										<input type="hidden" name="week" value="<?php echo $week;?>">
+										<input type="submit" value="預約" name="book" id="submitButton" class="btn-light-bg"style="background-color:#FF5D00;">
+										<input type="reset" value="重置" id="submitButton" class="btn-light-bg"style="background-color:#FF5D00;">
+									</h3>
+								</th>
+							</tr>
+						</form>
+						<form class="form" name="ChangePage" method="post" action="book.php">
 							<tr style="padding:1%;border: none;">
 								<th style="padding:1%;border: none;"></th>
 								<th colspan="7"style="padding:1%;border: none;">
@@ -217,8 +280,8 @@
 								?>
 								</th>
 							</tr>
-						</table>
-					</form>
+						</form>
+					</table>
 				</div><!--- END ROW -->
 			</div><!--- END CONTAINER -->
 		</section>

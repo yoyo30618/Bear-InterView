@@ -185,13 +185,21 @@
 									//SELECT * FROM `Appointment` WHERE `_ID`="20211207_01"
 									for($tmp=(-$week);$tmp<7-$week;$tmp++){//今天前本周內
 										$isfind=false;
-										$sql_query_data="SELECT * FROM `Appointment` WHERE `_ID`=\"".date("Ymd",strtotime("+".($today+$tmp)." day"))."_".str_pad(($Time-7),2,"0",STR_PAD_LEFT)."\"";
+										$sql_query_data="SELECT * FROM `Appointment` WHERE `_ID`LIKE \"%".date("Ymd",strtotime("+".($today+$tmp)." day"))."_".str_pad(($Time-7),2,"0",STR_PAD_LEFT)."\"";
 										$data_result=mysqli_query($db_link,$sql_query_data) or die("查詢失敗");
 										while($row=mysqli_fetch_array($data_result)){
-											if($tmp==0 && $today==0)
-												echo "<th style=\"background-color:#F5FF53;\">".$row[1]."</th>";
-											else
-												echo "<th>".$row[1]."</th>";
+											if($tmp==0 && $today==0){
+												if($_COOKIE['Bear-Interview_Status']=="管理員")
+													echo "<th style=\"background-color:#F5FF53;\">".$row[1]."</th>";
+												else
+													echo "<th style=\"background-color:#F5FF53;\">已有人預約</th>";
+											}
+											else{
+												if($_COOKIE['Bear-Interview_Status']=="管理員")
+													echo "<th>".$row[1]."</th>";
+												else
+													echo "<th>已有人預約</th>";
+											}
 											$isfind=true;
 											if($tmp>0)
 												$ThisWeek+=1;//紀錄本周幾小時
