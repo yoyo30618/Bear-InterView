@@ -20,10 +20,10 @@
 					$sql_query_InsertBook="INSERT INTO Appointment(_ID,Account,DataTime,Reason,Venue,Teams,Status,Notice) VALUES ('$_ID','$Account','$DateTime','$Reason','$Venue','$Teams','審核中','')";
 					//echo $sql_query_InsertBook."<br>";
 					mysqli_query($db_link,$sql_query_InsertBook) or die("查詢失敗");
-					echo"<script  language=\"JavaScript\">alert('登記完畢');location.href=\"book.php\";</script>";
 				}
 			}
 		}
+		echo"<script  language=\"JavaScript\">alert('登記完畢');location.href=\"book.php\";</script>";
 	}
 	else
 		echo"<script  language=\"JavaScript\">alert('請由正確路徑進入');location.href=\"index.php\";</script>";
