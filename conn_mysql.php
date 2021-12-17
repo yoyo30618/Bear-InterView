@@ -5,7 +5,6 @@
 	else{
 		mysqli_query($db_link, 'SET NAMES utf8');
 		$seldb=@mysqli_select_db($db_link,"Bear-Interview");
-		//mysqli_query($seldb, 'SET NAMES utf8');
 		if(!$seldb)
 			die("資料庫選擇失敗<br>");
 	}
