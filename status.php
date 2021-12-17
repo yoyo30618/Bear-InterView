@@ -42,8 +42,6 @@
 	</head>
 	
     <body>
-		<?php
-		?>
 		<div class="bear">
 			<!--START PRELOADER-->
 			<div class="preloader status">
@@ -71,6 +69,8 @@
 								<li><a href="book.php">晤談預約</a></li>
 								<li><a href="status.php">個人狀態</a></li>
 								<?php
+									if(isset($_COOKIE['Bear-Interview_Status'])&&($_COOKIE['Bear-Interview_Status'])=="管理員")
+										echo "<li><a href=\"RecordStatus.php\">審核申請</a></li>";
 									if(isset($_COOKIE['Bear-Interview_Account']))//如果有設定cookie代表已經登入
 										echo "<li><a href=\"logout.php\">登出</a></li>";
 									else{//尚未登入則顯示登入與註冊按鈕
@@ -183,7 +183,7 @@
 								while($row=mysqli_fetch_array($Record_result))
 								{
 									echo "<tr>";
-										echo "<th>".$row[0]."</th>";
+										echo "<th>".substr($row[2],0,16)."</th>";
 										echo "<th>".$row[3]."</th>";
 										echo "<th>".$row[4]."</th>";
 										echo "<th>".$row[5]."</th>";

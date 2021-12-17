@@ -27,21 +27,30 @@
 		<link rel="stylesheet" href="assets/css/switcher/switcher.css"> 	
 		<link rel="stylesheet" href="assets/css/switcher/style1.css" id="colors">	
 		<style>
-		table{
-		  width:100%;
-		  border-collapse: collapse;
-		}
-		th, td {
-		  border: 1px solid black;
-		  width:10%;
-		  text-align:center;
-		  border-collapse: collapse;
-		  font-size:25px;
-		}
+			table{
+			width:100%;
+			border-collapse: collapse;
+			}
+			th, td {
+			border: 1px solid black;
+			width:10%;
+			text-align:center;
+			border-collapse: collapse;
+			font-size:25px;
+			}
 		</style>
 	</head>
 	
     <body>
+		<?php
+			//身分不是老師不能看
+			if(isset($_COOKIE['Bear-Interview_Status'])){
+				if($_COOKIE['Bear-Interview_Status']!="管理員")
+					header('refresh:0;url=index.php');
+			}
+			else
+				header('refresh:0;url=index.php');
+		?>
 		<div class="bear">
 			<!--START PRELOADER-->
 			<div class="preloader status">
@@ -93,167 +102,80 @@
 					<div class="container">
 						<div class="col-md-10 col-md-offset-1 col-xs-12 text-center">
 							<div class="section-top-title wow fadeInRight" data-wow-duration="1s" data-wow-delay="0.3s" data-wow-offset="0">
-								<h1>晤談預約</h1>
+								<h1>審核申請</h1>
 								<ol class="breadcrumb">
 								<li><a href="index.php">首頁</a></li>
-								<li class="active">晤談預約</li>
+								<li class="active">審核申請</li>
 								</ol>
 							</div>
 						</div>
 					</div>
 				</div>
 			</section>	
-
-			<!-- 中央重點 -->
 			<section class="service">			
 				<div class="container">
 					<div class="row text-center">
-						<div class="section-title">
-							<h1>本周老師的晤談狀態</h1>
-							<h4>在這裡先看看你想與老師約的時間吧！<br>如果老師的狀態是可以預約的，那你可以登記並等待老師審核。</h4>
-							<span></span>
-						</div>
+						<h1>預約紀錄</h1>
 						<table>
-							<form class="form" name="ChangePage" method="post" action="BookCheck.php">
-								<?php 
-									require("conn_mysql.php");
-									$week=date("w");
-									if(isset($_POST['today'])){//如果是按鈕進入 檢查是上周還是下周
-										if(isset($_POST['PgeUp']))
-											$today=$_POST['today']+7;
-										else if(isset($_POST['PgeDown']))
-											$today=$_POST['today']-7;
-										else if(isset($_POST['PgeToday']))
-											$today=0;
-										else if(isset($_POST['book'])){//判斷是不是送出預約
-											//送出預約!
-											echo $_POST['today'];
-											echo "<br>";
-											echo $week;
-											$today=0;
-										}
+						<tr>
+							<th>日期&時間</th>
+							<th>原因</th>
+							<th>地點</th>
+							<th>參與人</th>
+							<th>狀態</th>
+						</tr>
+							<?php
+								$sql_query_Count="Select Count(*) from Appointment where 1";							
+								$Count_result=mysqli_query($db_link,$sql_query_Count) or die("查詢失敗");
+								$NowPage=1;
+								while($row=mysqli_fetch_array($Count_result))//無條件進位，產生頁碼(共有幾頁)
+									$DataLine=(int)(($row[0]+9)/10);//+9為了進位
+								if($DataLine==0)$DataLine=1;//如果沒資料也要有一頁
+								if(isset($_POST['Pge'])){
+									if($_POST['Pge']=="第一頁") $NowPage=1;
+									else if($_POST['Pge']=="最後一頁")$NowPage=$DataLine;
+									else $NowPage=$_POST['Pge'];//i現在顯示第幾頁面
+								}
+								$FirstData=(int)(($NowPage-1)*10);
+								//資料撈取
+								$sql_query_Record="SELECT * FROM Appointment where 1 order by `_ID` desc limit  $FirstData, 10";
+								$Record_result=mysqli_query($db_link,$sql_query_Record) or die("查詢失敗");
+								while($row=mysqli_fetch_array($Record_result))
+								{
+									echo "<tr>";
+										echo "<th>".substr($row[2],0,16)."</th>";
+										echo "<th>".$row[3]."</th>";
+										echo "<th>".$row[4]."</th>";
+										echo "<th>".$row[5]."</th>";
+										echo "<th>".$row[6]."</th>";
+									echo "</tr>";
+								}
+							?>
+						</table><br>
+						<form class="form" name="ChangePage" method="post" action="status.php"><!--換頁用Form-->
+							<?php
+								echo "<input type=\"submit\" value=\"第一頁\" name=\"Pge\" id=\"submitButton\" class=\"btn-light-bg\"style=\"background-color:#FF5D00;\">&nbsp;";
+								for($tmp=$NowPage-2,$j=0;($tmp<=$DataLine)&&$j<5;$tmp++){//j代表顯示五頁面 從現在頁面往前三 往後二
+									if($tmp>0){
+										$j++;
+										if( $NowPage==$tmp)//i要無條件進位!
+											echo "<input type=\"submit\" value=\"$tmp\" name=\"Pge\" id=\"submitButton\" class=\"btn-light-bg\" style=\"background-color:blue;\">&nbsp;";
+										else
+											echo "<input type=\"submit\" value=\"$tmp\" name=\"Pge\" id=\"submitButton\" class=\"btn-light-bg\">&nbsp;";
 									}
-									else
-										$today=0;//如果是剛進入的話 就顯示今天
-								?> 
-								<tr>
-									<th></th>
-									<?php 
-										for($tmp=(-$week);$tmp<7-$week;$tmp++){//根據偏差日期畫表
-											if($tmp==0 && $today==0)
-												echo "<th style=\"background-color:#F5FF53;\">".date("m/d",strtotime("+".($today+$tmp)." day"))."</th>";
-											else
-												echo "<th>".date("m/d",strtotime("+".($today+$tmp)." day"))."</th>";
-										}
-									?>
-								</tr>
-								<tr>
-									<th></th>
-									<?php for($tmp=(-$week);$tmp<7-$week;$tmp++){//根據偏差日期畫表
-											if($tmp==0 && $today==0)
-												echo "<th style=\"background-color:#F5FF53;\">".date("D",strtotime("+".($today+$tmp)." day"))."</th>";
-											else
-												echo "<th>".date("D",strtotime("+".($today+$tmp)." day"))."</th>";
-										}
-									?>
-								</tr>
-								<?php 
-									for($Time=8;$Time<18;$Time++){
-										echo "<tr>";
-										echo "<th>$Time:10~".($Time+1).":00</th>";
-										//SELECT * FROM `Appointment` WHERE `_ID`="20211207_01"
-										for($tmp=(-$week);$tmp<7-$week;$tmp++){//今天前本周內
-											$isfind=false;
-											$sql_query_data="SELECT * FROM `Appointment` WHERE `_ID` LIKE \"%".date("Ymd",strtotime("+".($today+$tmp)." day"))."_".str_pad(($Time-7),2,"0",STR_PAD_LEFT)."\"";
-											$data_result=mysqli_query($db_link,$sql_query_data) or die("查詢失敗");
-											while($row=mysqli_fetch_array($data_result)){
-												if($tmp==0 && $today==0){
-													if($_COOKIE['Bear-Interview_Status']=="管理員")
-														echo "<th style=\"background-color:#F5FF53;\">".$row[1]."</th>";
-													else
-														echo "<th style=\"background-color:#F5FF53;\">已有人預約</th>";
-												}
-												else{
-													if($_COOKIE['Bear-Interview_Status']=="管理員")
-														echo "<th>".$row[1]."</th>";
-													else
-														echo "<th>已有人預約</th>";
-												}
-												$isfind=true;
-												break;
-											}
-											if($isfind==false){//沒找到代表可預約
-												$value=date("Ymd",strtotime("+".($today+$tmp)." day"))."_".str_pad(($Time-7),2,"0",STR_PAD_LEFT);//產生資料庫對應ID
-												if($tmp==0 && $today==0)
-													echo "<th style=\"background-color:#F5FF53;\"></th>";
-													else if($today==0 && $tmp>=0)//本周
-														echo "<th><input  type=\"checkbox\" name=$value></input></th>";//如果可預約 產生checkbox
-													else if($today>0)//未來周
-														echo "<th><input  type=\"checkbox\" name=$value></input></th>";//如果可預約 產生checkbox
-												else//過去的日子不能預約
-													echo "<th></th>";
-											}
-										}
-										echo "</tr>";
-									}
-								?>
-								<tr style="padding:1%;border: none;">
-									<th style="padding:1%;border: none;"></th>
-									<th colspan="7"style="padding:1%;border: none;">
-										<h3>
-											有哪些人(簡易備註即可)&nbsp;<textarea name="Teams" style = "resize:none;width:40%;height:40%;" ></textarea><br><br>
-											地點
-											<select name="Venue">
-												<option value="辦公室">辦公室</option>
-												<option value="實驗室">實驗室</option>
-												<option value="C311">C311</option>
-												<option value="C419">C419</option>
-												<option value="C506">C506</option>
-											<?php
-												if ($_COOKIE['Bear-Interview_Status']=="管理員"){//增加老師才可以選的選項
-													echo "<option value=\"不在學校\">不在學校</option>";
-												}
-											?>
-											</select>&nbsp;&nbsp;
-											項目
-											<select name="Class">
-												<option value="導生班晤談">導生班晤談</option>
-												<option value="專題討論">專題討論</option>
-												<option value="課程討論">課程討論</option>
-												<?php
-													if ($_COOKIE['Bear-Interview_Status']=="管理員")//增加老師才可以選的選項
-													{
-														echo "<option value=\"開會\">開會</option>";
-														echo "<option value=\"出差\">出差</option>";
-														echo "<option value=\"上課\">上課</option>";		
-													}
-												?>
-												<option value="其他">其他</option>
-											</select>
-											<input type="hidden" name="today" value="<?php echo $today;?>">
-											<input type="hidden" name="week" value="<?php echo $week;?>">
-											<input type="submit" value="預約" name="book" id="submitButton" class="btn-light-bg"style="background-color:#FF5D00;">
-											<input type="reset" value="重置" id="submitButton" class="btn-light-bg"style="background-color:#FF5D00;">
-										</h3>
-									</th>
-								</tr>
-							</form>
-							<form class="form" name="ChangePage" method="post" action="book.php">
-								<tr style="padding:1%;border: none;">
-									<th style="padding:1%;border: none;"></th>
-									<th colspan="7"style="padding:1%;border: none;">
-									<?php
-										echo "<input type=\"hidden\" name=\"today\" value=\"$today\" />";
-										echo "<input type=\"submit\" value=\"上一周\" name=\"PgeDown\" id=\"submitButton\" class=\"btn-light-bg\"style=\"background-color:#FF5D00;\">&nbsp;";
-										echo "<input type=\"submit\" value=\"今天\" name=\"PgeToday\" id=\"submitButton\" class=\"btn-light-bg\"style=\"background-color:#FF5D00;\">&nbsp;";
-										echo "<input type=\"submit\" value=\"下一周\" name=\"PgeUp\" id=\"submitButton\" class=\"btn-light-bg\"style=\"background-color:#FF5D00;\">&nbsp;";
-									?>
-									</th>
-								</tr>
-							</form>
-						</table>
-					</div><!--- END ROW -->
-				</div><!--- END CONTAINER -->
+								}
+								echo "<input type=\"submit\" value=\"最後一頁\" name=\"Pge\" id=\"submitButton\" class=\"btn-light-bg\"style=\"background-color:#FF5D00;\">&nbsp;";
+							?>
+						</form><br>
+						
+					</div>
+				</div>
+			</section>		
+			<!--預約廣告-->
+			<section class="buy_now">
+				<div class="container text-center">
+					<h1 class="buy_now_title">準備好要預約了嗎?<a href="book.php" class="btn btn-default btn-promotion-bg">點此預約</a> </h1>
+				</div>
 			</section>
 			<!--底部資訊-->
 			<section class="footer-top">
