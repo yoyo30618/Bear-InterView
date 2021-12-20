@@ -116,43 +116,61 @@
 				<div class="container">
 					<div class="row text-center">
 						<h1>預約紀錄</h1>
-						<table>
-						<tr>
-							<th>日期&時間</th>
-							<th>原因</th>
-							<th>地點</th>
-							<th>參與人</th>
-							<th>狀態</th>
-						</tr>
-							<?php
-								$sql_query_Count="Select Count(*) from Appointment where 1";							
-								$Count_result=mysqli_query($db_link,$sql_query_Count) or die("查詢失敗");
-								$NowPage=1;
-								while($row=mysqli_fetch_array($Count_result))//無條件進位，產生頁碼(共有幾頁)
-									$DataLine=(int)(($row[0]+9)/10);//+9為了進位
-								if($DataLine==0)$DataLine=1;//如果沒資料也要有一頁
-								if(isset($_POST['Pge'])){
-									if($_POST['Pge']=="第一頁") $NowPage=1;
-									else if($_POST['Pge']=="最後一頁")$NowPage=$DataLine;
-									else $NowPage=$_POST['Pge'];//i現在顯示第幾頁面
-								}
-								$FirstData=(int)(($NowPage-1)*10);
-								//資料撈取
-								$sql_query_Record="SELECT * FROM Appointment where 1 order by `_ID` desc limit  $FirstData, 10";
-								$Record_result=mysqli_query($db_link,$sql_query_Record) or die("查詢失敗");
-								while($row=mysqli_fetch_array($Record_result))
-								{
-									echo "<tr>";
-										echo "<th>".substr($row[2],0,16)."</th>";
-										echo "<th>".$row[3]."</th>";
-										echo "<th>".$row[4]."</th>";
-										echo "<th>".$row[5]."</th>";
-										echo "<th>".$row[6]."</th>";
-									echo "</tr>";
-								}
-							?>
-						</table><br>
-						<form class="form" name="ChangePage" method="post" action="status.php"><!--換頁用Form-->
+						<h4>拒絕->會將該時段所有預約改為未通過</h4>
+						<h4>反悔->會將該時段所有預約改為審核中</h4>
+						<h4>通過->會將該時段其餘所有預約改為未通過，並通過本時段</h4>
+						<form class="form" name="StatusChange" method="post" action="StatusChange.php"><!--審核狀態用Form-->
+							<table>
+							<tr>
+								<th>日期&時間</th>
+								<th>原因</th>
+								<th>地點</th>
+								<th>參與人</th>
+								<th>狀態</th>
+								<th>動作</th>
+							</tr>
+								<?php
+									$sql_query_Count="Select Count(*) from Appointment where 1";							
+									$Count_result=mysqli_query($db_link,$sql_query_Count) or die("查詢失敗");
+									$NowPage=1;
+									while($row=mysqli_fetch_array($Count_result))//無條件進位，產生頁碼(共有幾頁)
+										$DataLine=(int)(($row[0]+9)/10);//+9為了進位
+									if($DataLine==0)$DataLine=1;//如果沒資料也要有一頁
+									if(isset($_POST['Pge'])){
+										if($_POST['Pge']=="第一頁") $NowPage=1;
+										else if($_POST['Pge']=="最後一頁")$NowPage=$DataLine;
+										else $NowPage=$_POST['Pge'];//i現在顯示第幾頁面
+									}
+									$FirstData=(int)(($NowPage-1)*10);
+									//資料撈取
+									$sql_query_Record="SELECT * FROM Appointment where 1 order by `Status` ASC , `DataTime` ASC limit  $FirstData, 10";
+									//$sql_query_Record="SELECT * FROM Appointment where 1 order by `_ID` desc limit  $FirstData, 10";
+									$Record_result=mysqli_query($db_link,$sql_query_Record) or die("查詢失敗");
+									while($row=mysqli_fetch_array($Record_result))
+									{
+										echo "<tr>";
+											echo "<th>".substr($row[2],0,16)."</th>";
+											echo "<th>".$row[3]."</th>";
+											echo "<th>".$row[4]."</th>";
+											echo "<th>".$row[5]."</th>";
+											echo "<th>".$row[6]."</th>";
+											if($row[6]=="審核中"){//使用name區分現在按的按鈕
+												echo "<th>";
+													echo"<input type=\"submit\" value=\"通過\" name=\"Agree".$row[0]."\" id=\"submitButton\" class=\"btn-light-bg\" style=\"background-color:green;\">";
+													echo"<input type=\"submit\" value=\"拒絕\" name=\"Refuse".$row[0]."\" id=\"submitButton\" class=\"btn-light-bg\" style=\"background-color:red;\">";
+												echo "</th>";
+											}
+											else if($row[6]=="通過!")
+												echo "<th><input type=\"submit\" value=\"反悔\" name=\"Repent".$row[0]."\" id=\"submitButton\" class=\"btn-light-bg\" style=\"background-color:orange	;\"></th>";
+											else 
+												echo "<th></th>";
+										echo "</tr>";
+									}
+								?>
+							</table>
+							<input type="hidden" name="Pge" value=<?php echo $NowPage?>><!--把當前頁碼傳遞過去 方便傳遞回來-->
+						</form><br>
+						<form class="form" name="ChangePage" method="post" action="RecordStatus.php"><!--換頁用Form-->
 							<?php
 								echo "<input type=\"submit\" value=\"第一頁\" name=\"Pge\" id=\"submitButton\" class=\"btn-light-bg\"style=\"background-color:#FF5D00;\">&nbsp;";
 								for($tmp=$NowPage-2,$j=0;($tmp<=$DataLine)&&$j<5;$tmp++){//j代表顯示五頁面 從現在頁面往前三 往後二
