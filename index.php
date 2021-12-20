@@ -161,31 +161,44 @@
 												$sql_query_data="SELECT * FROM `Appointment` WHERE `_ID`LIKE \"%".date("Ymd",strtotime("+".($today+$tmp)." day"))."_".str_pad(($Time-7),2,"0",STR_PAD_LEFT)."\"";
 												$data_result=mysqli_query($db_link,$sql_query_data) or die("查詢失敗");//像資料庫查詢當日紀錄
 												while($row=mysqli_fetch_array($data_result)){
-													if($tmp==0 && $today==0){//若為當日 當周則黃色
-														if(isset($_COOKIE['Bear-Interview_Status'])){//如果有設定cookie(登入狀態)
-															if($_COOKIE['Bear-Interview_Status']=="管理員")//且他是管理員
-																echo "<th style=\"background-color:#F5FF53;\">".$row[1]."</th>";
-															else
-																echo "<th style=\"background-color:#F5FF53;\">已有人預約</th>";
+													if($row[6]=="通過!"){
+														if($tmp==0 && $today==0){//若為當日 當周則黃色
+															if(isset($_COOKIE['Bear-Interview_Status'])){//如果有設定cookie(登入狀態)
+																if($_COOKIE['Bear-Interview_Status']=="管理員")//且他是管理員
+																	echo "<th style=\"background-color:#F5FF53;\">".$row[1]."</th>";
+																	else if($row[1]==$_COOKIE['Bear-Interview_Account'])//且他是管理員
+																		echo "<th style=\"background-color:#F5FF53;\">自己已登記</th>";
+																	else
+																		echo "<th style=\"background-color:#F5FF53;\">已有人登記</th>";
+															}
+															else//非登入狀態
+																echo "<th style=\"background-color:#F5FF53;\">已有人登記</th>";
 														}
-														else//非登入狀態
-															echo "<th style=\"background-color:#F5FF53;\">已有人預約</th>";
-													}
-													else{//其餘白底
-														if(isset($_COOKIE['Bear-Interview_Status'])){//如果有設定cookie(登入狀態)
-															if($_COOKIE['Bear-Interview_Status']=="管理員")//且他是管理員
-																echo "<th>".$row[1]."</th>";
-															else
-																echo "<th>已有人預約</th>";
+														else{//其餘白底
+															if(isset($_COOKIE['Bear-Interview_Status'])){//如果有設定cookie(登入狀態)
+																if($_COOKIE['Bear-Interview_Status']=="管理員")//且他是管理員
+																	echo "<th>".$row[1]."</th>";
+																	else if($row[1]==$_COOKIE['Bear-Interview_Account'])//且他是管理員
+																		echo "<th>自己已登記</th>";
+																	else
+																		echo "<th>已有人登記</th>";
+															}
+															else//非登入狀態
+																echo "<th>已有人登記</th>";
 														}
-														else//非登入狀態
-															echo "<th>已有人預約</th>";
+														$isfind=true;
+														if($tmp>0)//本周的只算未來日期
+															$FeaTureWeek+=1;//紀錄本周幾小時
+														$ThisWeek+=1;//紀錄查詢當周幾小時
+														break;
 													}
-													$isfind=true;
-													if($tmp>0)//本周的只算未來日期
-														$FeaTureWeek+=1;//紀錄本周幾小時
-													$ThisWeek+=1;//紀錄查詢當周幾小時
-													break;
+													else if($row[6]=="審核中"&&$row[1]==$_COOKIE['Bear-Interview_Account']){//自己的登記 但還沒審核
+														if($tmp==0 && $today==0)//若為當日 當周則黃色
+															echo "<th style=\"background-color:#F5FF53;color:red;\">已登記待審核</th>";
+														else
+															echo "<th style=\"color:red;\">已登記待審核</th>";
+														$isfind=true;
+													}
 												}
 												if($isfind==false){//沒找到的話
 													if($tmp==0 && $today==0)//當周當日黃底

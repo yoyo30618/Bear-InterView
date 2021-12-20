@@ -123,6 +123,7 @@
 							<table>
 							<tr>
 								<th>日期&時間</th>
+								<th>登記人</th>
 								<th>原因</th>
 								<th>地點</th>
 								<th>參與人</th>
@@ -130,6 +131,8 @@
 								<th>動作</th>
 							</tr>
 								<?php
+									$nowcolor="pink";//奇數時段顏色
+									$nowdate="";
 									$sql_query_Count="Select Count(*) from Appointment where 1";							
 									$Count_result=mysqli_query($db_link,$sql_query_Count) or die("查詢失敗");
 									$NowPage=1;
@@ -148,22 +151,33 @@
 									$Record_result=mysqli_query($db_link,$sql_query_Record) or die("查詢失敗");
 									while($row=mysqli_fetch_array($Record_result))
 									{
-										echo "<tr>";
+										if($nowdate!=substr($row[2],0,16)){
+											$nowdate=substr($row[2],0,16);
+											if($nowcolor=="pink")$nowcolor="lightblue";
+											else $nowcolor="pink";
+										}
+										echo "<tr bgcolor=\"".$nowcolor."\">";
 											echo "<th>".substr($row[2],0,16)."</th>";
+											echo "<th>".$row[1]."</th>";
 											echo "<th>".$row[3]."</th>";
 											echo "<th>".$row[4]."</th>";
 											echo "<th>".$row[5]."</th>";
 											echo "<th>".$row[6]."</th>";
-											if($row[6]=="審核中"){//使用name區分現在按的按鈕
-												echo "<th>";
-													echo"<input type=\"submit\" value=\"通過\" name=\"Agree".$row[0]."\" id=\"submitButton\" class=\"btn-light-bg\" style=\"background-color:green;\">";
-													echo"<input type=\"submit\" value=\"拒絕\" name=\"Refuse".$row[0]."\" id=\"submitButton\" class=\"btn-light-bg\" style=\"background-color:red;\">";
-												echo "</th>";
+											if($row[2]>date("Y-m-d 00:00:00")){
+												if($row[6]=="審核中"){//使用name區分現在按的按鈕
+													echo "<th>";
+														echo"<input type=\"submit\" value=\"通過\" name=\"Agree".$row[0]."\" id=\"submitButton\" class=\"btn-light-bg\" style=\"background-color:green;\">";
+														echo"<input type=\"submit\" value=\"拒絕\" name=\"Refuse".$row[0]."\" id=\"submitButton\" class=\"btn-light-bg\" style=\"background-color:red;\">";
+													echo "</th>";
+												}
+												else if($row[6]=="通過!")
+													echo "<th><input type=\"submit\" value=\"反悔\" name=\"Repent".$row[0]."\" id=\"submitButton\" class=\"btn-light-bg\" style=\"background-color:orange	;\"></th>";
+												else 
+													echo "<th></th>";
 											}
-											else if($row[6]=="通過!")
-												echo "<th><input type=\"submit\" value=\"反悔\" name=\"Repent".$row[0]."\" id=\"submitButton\" class=\"btn-light-bg\" style=\"background-color:orange	;\"></th>";
-											else 
+											else
 												echo "<th></th>";
+											
 										echo "</tr>";
 									}
 								?>
