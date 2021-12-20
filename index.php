@@ -194,9 +194,9 @@
 													}
 													else if($row[6]=="審核中"&&$row[1]==$_COOKIE['Bear-Interview_Account']){//自己的登記 但還沒審核
 														if($tmp==0 && $today==0)//若為當日 當周則黃色
-															echo "<th style=\"background-color:#F5FF53;color:red;\">已登記待審核</th>";
+															echo "<th style=\"background-color:#F5FF53;color:red;\">待老師審核</th>";
 														else
-															echo "<th style=\"color:red;\">已登記待審核</th>";
+															echo "<th style=\"color:red;\">待老師審核</th>";
 														$isfind=true;
 													}
 												}
