@@ -3,7 +3,6 @@
 	session_start();//開啟session
 	if(isset($_POST['book']))//如果是由post進入
 	{
-		//理論上可以送出 代表尚未被通過預約，所以目前不考慮重複問題((可能同時多人預約待審核，但不可能預約通過後還可以到這))
 		$week=$_POST['week'];//今天星期幾
 		$today=$_POST['today'];//現在往未來幾天或是往前幾天
 		$Account=$_SESSION['Bear-Interview_Account'];
@@ -17,7 +16,8 @@
 				$Venue=$_POST['Venue'];
 				$Teams=$_POST['Teams'];
 				if(isset($_POST[$NowFind])){//這一格被勾起來了，要登記!
-					$sql_query_InsertBook="INSERT INTO Appointment(_ID,Account,DataTime,Reason,Venue,Teams,Status,Notice) VALUES ('$_ID','$Account','$DateTime','$Reason','$Venue','$Teams','審核中','')";
+					
+					$sql_query_InsertBook="INSERT INTO Appointment(_ID,Account,DataTime,Reason,Venue,Teams,Status,Notice) VALUES ('$_ID','$Account','$DateTime','$Reason','$Venue','$Teams','審核中','') ON DUPLICATE KEY UPDATE `Account`='$Account',`DataTime`='$DateTime',`Reason`='$Reason',`Venue`='$Venue',`Teams`='$Teams',`Status`='審核中'";
 					mysqli_query($db_link,$sql_query_InsertBook) or die("查詢失敗");
 				}
 			}

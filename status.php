@@ -156,42 +156,51 @@
 				<div class="container">
 					<div class="row text-center">
 						<h1>預約紀錄</h1>
-						<table>
-						<tr>
-							<th>日期&時間</th>
-							<th>原因</th>
-							<th>地點</th>
-							<th>參與人</th>
-							<th>狀態</th>
-						</tr>
-							<?php
-								$sql_query_Count="Select Count(*) from Appointment where Account='$tp'";							
-								$Count_result=mysqli_query($db_link,$sql_query_Count) or die("查詢失敗");
-								$NowPage=1;
-								while($row=mysqli_fetch_array($Count_result))//無條件進位，產生頁碼(共有幾頁)
-									$DataLine=(int)(($row[0]+9)/10);//+9為了進位
-								if($DataLine==0)$DataLine=1;//如果沒資料也要有一頁
-								if(isset($_POST['Pge'])){
-									if($_POST['Pge']=="第一頁") $NowPage=1;
-									else if($_POST['Pge']=="最後一頁")$NowPage=$DataLine;
-									else $NowPage=$_POST['Pge'];//i現在顯示第幾頁面
-								}
-								$FirstData=(int)(($NowPage-1)*10);
-								//資料撈取
-								$sql_query_Record="SELECT * FROM Appointment where Account='$tp' order by `_ID` desc limit  $FirstData, 10";
-								$Record_result=mysqli_query($db_link,$sql_query_Record) or die("查詢失敗");
-								while($row=mysqli_fetch_array($Record_result))
-								{
-									echo "<tr>";
-										echo "<th>".substr($row[2],0,16)."</th>";
-										echo "<th>".$row[3]."</th>";
-										echo "<th>".$row[4]."</th>";
-										echo "<th>".$row[5]."</th>";
-										echo "<th>".$row[6]."</th>";
-									echo "</tr>";
-								}
-							?>
-						</table><br>
+						<form class="form" name="BookCancel" method="post" action="BookCancel.php"><!--取消用Form-->
+							<table>
+							<tr>
+								<th>日期&時間</th>
+								<th>原因</th>
+								<th>地點</th>
+								<th>參與人</th>
+								<th>狀態</th>
+							</tr>
+								<?php
+									$sql_query_Count="Select Count(*) from Appointment where Account='$tp'";							
+									$Count_result=mysqli_query($db_link,$sql_query_Count) or die("查詢失敗");
+									$NowPage=1;
+									while($row=mysqli_fetch_array($Count_result))//無條件進位，產生頁碼(共有幾頁)
+										$DataLine=(int)(($row[0]+9)/10);//+9為了進位
+									if($DataLine==0)$DataLine=1;//如果沒資料也要有一頁
+									if(isset($_POST['Pge'])){
+										if($_POST['Pge']=="第一頁") $NowPage=1;
+										else if($_POST['Pge']=="最後一頁")$NowPage=$DataLine;
+										else $NowPage=$_POST['Pge'];//i現在顯示第幾頁面
+									}
+									$FirstData=(int)(($NowPage-1)*10);
+									//資料撈取
+									$sql_query_Record="SELECT * FROM Appointment where Account='$tp' order by `_ID` desc limit  $FirstData, 10";
+									$Record_result=mysqli_query($db_link,$sql_query_Record) or die("查詢失敗");
+									while($row=mysqli_fetch_array($Record_result))
+									{
+										echo "<tr>";
+											echo "<th>".substr($row[2],0,16)."</th>";
+											echo "<th>".$row[3]."</th>";
+											echo "<th>".$row[4]."</th>";
+											echo "<th>".$row[5]."</th>";
+											if($row[6]=="審核中")
+											{
+												echo "<th>".$row[6];
+												echo "<input type=\"submit\" value=\"取消\" name=\"".$row[0]."\" id=\"submitButton\" class=\"btn-light-bg\">";
+												echo "</th>";
+											}
+											else
+												echo "<th>".$row[6]."</th>";
+										echo "</tr>";
+									}
+								?>
+							</table><br>
+						</form>
 						<form class="form" name="ChangePage" method="post" action="status.php"><!--換頁用Form-->
 							<?php
 								echo "<input type=\"submit\" value=\"第一頁\" name=\"Pge\" id=\"submitButton\" class=\"btn-light-bg\"style=\"background-color:#FF5D00;\">&nbsp;";

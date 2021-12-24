@@ -173,21 +173,21 @@
 															if($_COOKIE['Bear-Interview_Status']=="管理員")//且他是管理員
 																echo "<th style=\"background-color:#F5FF53;\">".$row[1]."</th>";
 																else if($row[1]==$_COOKIE['Bear-Interview_Account'])//且他是管理員
-																	echo "<th style=\"background-color:#F5FF53;\">自己已登記</th>";
+																	echo "<th style=\"background-color:#F5FF53;color:red;\">自己已登記</th>";
 																else
-																	echo "<th style=\"background-color:#F5FF53;\">已有人登記</th>";
+																	echo "<th style=\"background-color:#F5FF53;color:red;\">已有人登記</th>";
 														}
 														else//非登入狀態
-															echo "<th style=\"background-color:#F5FF53;\">已有人登記</th>";
+															echo "<th style=\"background-color:#F5FF53;color:red;\">已有人登記</th>";
 													}
 													else{//其餘白底
 														if(isset($_COOKIE['Bear-Interview_Status'])){//如果有設定cookie(登入狀態)
 															if($_COOKIE['Bear-Interview_Status']=="管理員")//且他是管理員
 																echo "<th>".$row[1]."</th>";
 																else if($row[1]==$_COOKIE['Bear-Interview_Account'])//且他是管理員
-																	echo "<th>自己已登記</th>";
+																	echo "<th style=\"color:red;\">自己已登記</th>";
 																else
-																	echo "<th>已有人登記</th>";
+																	echo "<th style=\"color:red;\">已有人登記</th>";
 														}
 														else//非登入狀態
 															echo "<th>已有人登記</th>";
@@ -195,12 +195,13 @@
 													$isfind=true;
 													break;
 												}
-												else if($row[6]=="審核中"&&$row[1]==$_COOKIE['Bear-Interview_Account']){//自己的登記 但還沒審核
+												else if($row[6]=="審核中"){
 													if($tmp==0 && $today==0)//若為當日 當周則黃色
-														echo "<th style=\"background-color:#F5FF53;color:red;\">待老師審核</th>";
+														echo "<th style=\"background-color:#F5FF53;\">待老師審核</th>";
 													else
-														echo "<th style=\"color:red;\">待老師審核</th>";
+														echo "<th>待老師審核</th>";
 													$isfind=true;
+													break;
 												}
 											}
 											if($isfind==false){//沒找到代表可預約
