@@ -112,13 +112,13 @@
 							<div class="contact">
 								<h1>填寫以下基本資料以註冊</h1>
 								<h6>為避免惡意註冊，帳號將在老師審核後開通，註冊後請靜候佳音</h6>
-								<form class="form" name="register" method="post" action="contact.php">
+								<form class="form" name="register" method="post" action="registecheck.php">
 									<div class="row">
 										<div class="form-group col-md-6">
 											<input type="text" name="studentid" class="form-control" id="first-name" placeholder="帳號(學號)"required="required">
 										</div>
 										<div class="form-group col-md-6">
-											<input type="password" name="email" class="form-control" id="email" placeholder="密碼"required="required">
+											<input type="password" name="pwd" class="form-control" id="email" placeholder="密碼"required="required">
 										</div>
 										<div class="form-group col-md-6">
 											<input type="email" name="email" class="form-control" id="email" placeholder="信箱"required="required">
