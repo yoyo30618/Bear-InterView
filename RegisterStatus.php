@@ -4,7 +4,7 @@
 		<?php 
 			session_start();
 			require("conn_mysql.php");
-			if(isset($_COOKIE['Bear-Interview_Account'])){//若有登入 跳轉離開
+			if(!isset($_COOKIE['Bear-Interview_Account'])){//未登入 跳轉離開
 				header('refresh:0;url=index.php');
 			}
 		?>
@@ -42,6 +42,15 @@
 	</head>
 	
     <body>
+		<?php
+			//身分不是老師不能看
+			if(isset($_COOKIE['Bear-Interview_Status'])){
+				if($_COOKIE['Bear-Interview_Status']!="管理員")
+					header('refresh:0;url=index.php');
+			}
+			else
+				header('refresh:0;url=index.php');
+		?>
 		<div class="bear">
 			<!--START PRELOADER-->
 			<div class="preloader status">
@@ -95,87 +104,92 @@
 					<div class="container">
 						<div class="col-md-10 col-md-offset-1 col-xs-12 text-center">
 							<div class="section-top-title wow fadeInRight" data-wow-duration="1s" data-wow-delay="0.3s" data-wow-offset="0">
-								<h1>註冊系統</h1>
+								<h1>註冊申請</h1>
 								<ol class="breadcrumb">
 								<li><a href="index.php">首頁</a></li>
-								<li class="active">註冊系統</li>
+								<li class="active">註冊申請</li>
 								</ol>
 							</div>
 						</div>
 					</div>
 				</div>
 			</section>	
-			
-			<!-- 中央重點 -->
-			<section class="contact_area section-padding">
-				<div class="container">	
-					<div class="row contact_padding">	
-						<div class="col-md-8 col-sm-12 col-sm-6 col-xs-12 wow fadeInRight" data-wow-duration="1s" data-wow-delay="0.6s" data-wow-offset="0">
-							<div class="contact">
-								<h1>填寫以下基本資料以註冊</h1>
-								<h6>為避免惡意註冊，帳號將在老師審核後開通，註冊後請靜候佳音</h6>
-								<form class="form" name="register" method="post" action="registecheck.php">
-									<div class="row">
-										<div class="form-group col-md-6">
-											<input type="text" name="studentid" class="form-control" id="first-name" placeholder="帳號(學號)"required="required">
-										</div>
-										<div class="form-group col-md-6">
-											<input type="password" name="pwd" class="form-control" id="email" placeholder="密碼"required="required">
-										</div>
-										<div class="form-group col-md-6">
-											<input type="email" name="email" class="form-control" id="email" placeholder="信箱"required="required">
-										</div>
-										<div class="form-group col-md-6">
-											<input type="text" name="name" class="form-control"  placeholder="姓名"required="required">
-										</div>
-										<div class="form-group col-md-12">
-										<div class="actions">
-											<input type="submit" value="註冊" name="submit" id="submitButton" class="btn-light-bg" title="點此登入" />
-											</div>
-										</div>
-									</div>
-								</form>
-							</div>
-						</div>
-						<div class="col-md-4 col-sm-4 col-xs-12">
-							<div class="single-address wow fadeInLeft" data-wow-duration="1s" data-wow-delay="0.4s" data-wow-offset="0">
-								<div class="media">
-									<div class="media-left">
-										<i class="fa fa-rocket"></i>
-									</div>
-									<div class="media-body text-left">
-										<h2 class="media-heading">地址</h2>
-										<p>95092<br> 臺東市大學路二段369號<br>資訊工程學系</p>
-									</div>
-								</div>
-							</div>
-							<div class="single-address wow fadeInLeft" data-wow-duration="1s" data-wow-delay="0.5s" data-wow-offset="0">
-								<div class="media">
-									<div class="media-left">
-										<i class="fa fa-phone"></i>
-									</div>
-									<div class="media-body text-left">
-										<h2 class="media-heading">電話與老師聯絡</h2>
-										<p>(089) 517602 <br> (089) 318855#6212</p>
-									</div>
-								</div>
-							</div>
-							<div class="single-address wow fadeInLeft" data-wow-duration="1s" data-wow-delay="0.6s" data-wow-offset="0">
-								<div class="media">
-									<div class="media-left">
-										<i class="fa fa-envelope"></i>
-									</div>
-									<div class="media-body text-left">
-										<h2 class="media-heading">E-mail與老師聯絡</h2>
-										<p>cwlee@nttu.edu.tw</p>
-									</div>
-								</div>
-							</div>
-						</div>
-					</div>		
-				</div>		
-			</section>
+			<section class="service">			
+				<div class="container">
+					<div class="row text-center">
+						<h1>註冊申請</h1>
+						<h4>以下人員正等待老師審核帳號</h4>
+						<form class="form" name="RegisterChange" method="post" action="RegisterChange.php"><!--審核狀態用Form-->
+							<table>
+							<tr>
+								<th>帳號</th>
+								<th>姓名</th>
+								<th>信箱</th>
+								<th>狀態</th>
+								<th></th>
+							</tr>
+								<?php
+									$nowcolor="lightblue";//奇數時段顏色
+									$sql_query_Count="Select Count(*) from AccountTable where 1";							
+									$Count_result=mysqli_query($db_link,$sql_query_Count) or die("查詢失敗");
+									$NowPage=1;
+									while($row=mysqli_fetch_array($Count_result))//無條件進位，產生頁碼(共有幾頁)
+										$DataLine=(int)(($row[0]+9)/10);//+9為了進位
+									if($DataLine==0)$DataLine=1;//如果沒資料也要有一頁
+									if(isset($_POST['Pge'])){
+										if($_POST['Pge']=="第一頁") $NowPage=1;
+										else if($_POST['Pge']=="最後一頁")$NowPage=$DataLine;
+										else $NowPage=$_POST['Pge'];//i現在顯示第幾頁面
+									}
+									$FirstData=(int)(($NowPage-1)*10);
 
+									//資料撈取
+									$sql_query_Register="SELECT * FROM `AccountTable` WHERE `Status`=\"審核中\" order by `Status` ASC limit  $FirstData, 10";
+									$Register_result=mysqli_query($db_link,$sql_query_Register) or die("查詢失敗");
+									while($row=mysqli_fetch_array($Register_result))
+									{
+										if($nowcolor=="pink") $nowcolor="lightblue";
+										else $nowcolor="pink";
+										echo "<tr bgcolor=\"".$nowcolor."\">";
+											echo "<th>".$row[0]."</th>";
+											echo "<th>".$row[4]."</th>";
+											echo "<th>".$row[3]."</th>";
+											echo "<th>".$row[2]."</th>";
+											echo "<th>";
+												echo"<input type=\"submit\" value=\"通過\" name=\"Agree".$row[0]."\" id=\"submitButton\" class=\"btn-light-bg\" style=\"background-color:green;\">";
+												echo"<input type=\"submit\" value=\"拒絕\" name=\"Refuse".$row[0]."\" id=\"submitButton\" class=\"btn-light-bg\" style=\"background-color:red;\">";
+											echo "</th>";
+										echo "</tr>";
+									}
+								?>
+							</table>
+							<input type="hidden" name="Pge" value=<?php echo $NowPage?>><!--把當前頁碼傳遞過去 方便傳遞回來-->
+						</form><br>
+						<form class="form" name="ChangePage" method="post" action="RegisterStatus.php"><!--換頁用Form-->
+							<?php
+								echo "<input type=\"submit\" value=\"第一頁\" name=\"Pge\" id=\"submitButton\" class=\"btn-light-bg\"style=\"background-color:#FF5D00;\">&nbsp;";
+								for($tmp=$NowPage-2,$j=0;($tmp<=$DataLine)&&$j<5;$tmp++){//j代表顯示五頁面 從現在頁面往前三 往後二
+									if($tmp>0){
+										$j++;
+										if( $NowPage==$tmp)//i要無條件進位!
+											echo "<input type=\"submit\" value=\"$tmp\" name=\"Pge\" id=\"submitButton\" class=\"btn-light-bg\" style=\"background-color:blue;\">&nbsp;";
+										else
+											echo "<input type=\"submit\" value=\"$tmp\" name=\"Pge\" id=\"submitButton\" class=\"btn-light-bg\">&nbsp;";
+									}
+								}
+								echo "<input type=\"submit\" value=\"最後一頁\" name=\"Pge\" id=\"submitButton\" class=\"btn-light-bg\"style=\"background-color:#FF5D00;\">&nbsp;";
+							?>
+						</form><br>
+						
+					</div>
+				</div>
+			</section>		
+			<!--預約廣告-->
+			<section class="buy_now">
+				<div class="container text-center">
+					<h1 class="buy_now_title">準備好要預約了嗎?<a href="book.php" class="btn btn-default btn-promotion-bg">點此預約</a> </h1>
+				</div>
+			</section>
 			<!--底部資訊-->
 			<section class="footer-top">
 				<div class="footer_overlay section-padding">	
@@ -193,7 +207,7 @@
 										</ul>
 									</div>
 								</div>
-								</div>
+							</div>
 							<div class="col-md-2 col-sm-6  wow fadeInLeft" data-wow-duration="1s" data-wow-delay="0.3s" data-wow-offset="0">
 								<div class="single_footer">
 									<h1>相關連結</h1>

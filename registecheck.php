@@ -13,12 +13,13 @@
 		$Rst=mysqli_query($db_link,$sql_query_RegStatus) or die("操作失敗");
 		//審核中 通過! 未通過
 		while($row=mysqli_fetch_array($Rst)){//已經被註冊過
-			$FindReg=true;
-			break;
+			if($row[2]!="拒絕申請"){//被退件的人可以重新申請
+				$FindReg=true;
+				break;
+			}
 		}
 		if(!$FindReg){
-			$sql_query_NewAcc="INSERT INTO `AccountTable`(`Account`, `Password`, `Status`, `EMail`, `Name`, `LineToken`, `Notice`) VALUES ('$studentid','$pwd','審核中','$email','$name','','')";
-			echo $sql_query_NewAcc;
+			$sql_query_NewAcc="INSERT INTO AccountTable(`Account`, `Password`, `Status`, `EMail`, `Name`, `LineToken`, `Notice`)VALUES ('$studentid','$pwd','審核中','$email','$name','','') ON DUPLICATE KEY UPDATE `Account`='$studentid',`Password`='$pwd',`Status`='審核中',`EMail`='$email',`Name`='$name',`LineToken`='',`Notice`=''";
 			mysqli_query($db_link,$sql_query_NewAcc) or die("查詢失敗");
 		}
 		else{

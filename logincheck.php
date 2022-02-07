@@ -14,6 +14,14 @@
 		{
 			if($row[1]==$Password)//登入成功
 			{
+				if($row[2]=="審核中"){
+					echo"<script  language=\"JavaScript\">alert('此帳號尚未被老師審核，請等待老師審核通過');location.href=\"login.php\";</script>";
+					break;
+				}
+				else if($row[2]=="拒絕申請"){
+					echo"<script  language=\"JavaScript\">alert('此帳號已被禁止，請重新註冊申請');location.href=\"register.php\";</script>";
+					break;
+				}
 				$_SESSION['Bear-Interview_Account']=$Account;//登入成功將資訊儲存到session中
 				$_SESSION['Bear-Interview_Islogin']=1;
 				setcookie("Bear-Interview_Account",$Account);

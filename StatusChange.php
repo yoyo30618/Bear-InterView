@@ -7,7 +7,7 @@
 	$Rst=mysqli_query($db_link,$sql_query_ChkRecord) or die("操作失敗");
 	//審核中 通過! 未通過
 	while($row=mysqli_fetch_array($Rst)){//每筆紀錄檢查
-			$FindPost=true;
+			
 		if($row[2]>date("Y-m-d 00:00:00")){//只檢查今天以後的紀錄
 			if(isset($_POST["Agree".$row[0]])){//檢查通過部分
 				//資料庫寫入通過
@@ -71,6 +71,5 @@
 			}
 		}
 	}
-	if($FindPost==false)//不當路徑進入
-		echo"<script  language=\"JavaScript\">alert('請由正確路徑進入');location.href=\"index.php\";</script>";
+	echo"<script  language=\"JavaScript\">alert('請由正確路徑進入');location.href=\"index.php\";</script>";
 ?>
