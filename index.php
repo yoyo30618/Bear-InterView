@@ -71,8 +71,21 @@
 										echo "<li><a href=\"RecordStatus.php\">審核申請</a></li>";
 										echo "<li><a href=\"RegisterStatus.php\">註冊申請</a></li>";
 									}
-									if(isset($_COOKIE['Bear-Interview_Account']))//如果有設定cookie代表已經登入
-										echo "<li><a href=\"logout.php\">登出</a></li>";
+									if(isset($_COOKIE['Bear-Interview_Account'])){//如果有設定cookie代表已經登入
+										echo "<li><a>登出/連動</a>";
+											echo "<ul class=\"sub-menu\">";
+												echo "<li><a href=\"logout.php\">登出</a></li>";
+												?>
+													<form id="form1" action="connectline.php" method="post">
+														<a style="color:#333 !important;"href="javascript:;" onclick="document.getElementById('form1').submit();">連動你的Line!</a>
+														<input type="hidden" name="Acc" value=<?php echo $_COOKIE['Bear-Interview_Account'] ?>>
+													</form>
+												<?php
+												echo "</li>";
+											echo "</ul>";
+										echo "</li>";
+									}
+									
 									else{//尚未登入則顯示登入與註冊按鈕
 										echo "<li><a>登入/註冊</a>";
 											echo "<ul class=\"sub-menu\">";
@@ -108,31 +121,31 @@
 				</div>
 			</section>
 			<!--中央重點-->
+			<?php //時間根據目前頁碼設定
+				$ThisWeek=0;
+				$FeaTureWeek=0;
+				if(isset($_POST['today'])){//如果是按鈕進入 檢查是上周還是下周
+					if(isset($_POST['PgeUp']))
+						$today=$_POST['today']+7;//today紀錄偏差日期
+					else if(isset($_POST['PgeDown']))
+						$today=$_POST['today']-7;
+					else if(isset($_POST['PgeToday']))
+						$today=0;
+				}
+				else//如果是剛進入的話 就顯示今天
+					$today=0;
+				$week=date("w");//week為本日星期
+			?> 						
 			<section class="feature section-padding">
 				<div class="container">
 					<div class="row text-center">
 						<div class="section-title">
-							<h1>本周老師的晤談狀態</h1>
+							<h1><?php echo date("m/d",strtotime("+".($today-$week)." day"))."~".date("m/d",strtotime("+".($today-$week+6)." day")); ?>老師的晤談狀態</h1>
 							<h4>在這裡先看看你想與老師約的時間吧!<br>如果老師的狀態是可以預約的，那你可以登入系統登記並等待老師審核。</h4>
 							<span></span>
 						</div>
 						<form class="form" name="ChangePage" method="post" action="index.php">
-							<table>
-								<?php 
-									$ThisWeek=0;
-									$FeaTureWeek=0;
-									if(isset($_POST['today'])){//如果是按鈕進入 檢查是上周還是下周
-										if(isset($_POST['PgeUp']))
-											$today=$_POST['today']+7;//today紀錄偏差日期
-										else if(isset($_POST['PgeDown']))
-											$today=$_POST['today']-7;
-										else if(isset($_POST['PgeToday']))
-											$today=0;
-									}
-									else//如果是剛進入的話 就顯示今天
-										$today=0;
-									$week=date("w");//week為本日星期
-								?> 							
+							<table>	
 								<tr>
 									<th></th>
 									<?php 
