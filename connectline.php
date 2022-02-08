@@ -9,7 +9,7 @@
                     URL += 'response_type=code';
                     URL += '&client_id=PJQxgGfbencYHw2UilGRWG';
                     //URL += '&redirect_uri=http://127.0.0.1:8787/bct/';
-                    URL += '&redirect_uri=http://algolab.nttu.edu.tw/Bear-InterView/CatchLineToken.php';
+                    URL += '&redirect_uri=http://algolab.nttu.edu.tw/Bear-InterView/CatchLineAccess.php';
                     URL += '&scope=notify';
                     URL += '&state='+$Acc;
                     URL += '&response_mode=form_post';
