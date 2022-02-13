@@ -7,6 +7,8 @@
 		$today=$_POST['today'];//現在往未來幾天或是往前幾天
 		$Account=$_SESSION['Bear-Interview_Account'];
 		require("conn_mysql.php");
+		if($Account=="")//如果帳號不知道為甚麼沒抓到
+			echo"<script  language=\"JavaScript\">alert('出現異常登入情形!請重新登入不好意思');location.href=\"logout.php\";</script>";
 		for($Time=8;$Time<18;$Time++){//一天看十個格子
 			for($tmp=(-$week);$tmp<7-$week;$tmp++){//今天前本周內
 				$NowFind=date("Ymd",strtotime("+".($today+$tmp)." day"))."_".str_pad(($Time-7),2,"0",STR_PAD_LEFT);
