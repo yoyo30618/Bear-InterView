@@ -7,7 +7,7 @@
 		$StudentID="";
 		if(strlen($_POST['CardID'])==10){//傳過來的是內碼
 			$sql_query_SearchID="SELECT * FROM `StudentName` WHERE `CardID`=\"".$_POST['CardID']."\"";
-			$row_result=mysqli_query($db_link_rollcall,$sql_query_SearchID) or die("查詢失敗");
+			$row_result=mysqli_query($db_link_rollcall,$sql_query_SearchID) or die("查詢失敗1");
 			while($row=mysqli_fetch_array($row_result)){//學生卡號與學號對應
 				$StudentID=$row[0];
 			}
@@ -21,7 +21,7 @@
 			/*檢查該生是否有修本課程*/
 			$sql_query_StudyCalss="SELECT * FROM `".$_POST['ClassEng']."` WHERE `StudentID`=\"".$StudentID."\"";
 			//echo $sql_query_StudyCalss;
-			$row_result=mysqli_query($db_link_rollcall,$sql_query_StudyCalss) or die("查詢失敗");
+			$row_result=mysqli_query($db_link_rollcall,$sql_query_StudyCalss) or die("查詢失敗2");
 			$Find="";
 			while($row=mysqli_fetch_array($row_result)){//學生卡號與學號對應
 				$Find=$row[0];
@@ -30,9 +30,9 @@
 			if($Find=="")//沒找到該生修課資料
 				echo"<script  language=\"JavaScript\">alert('找不到該生修課資料，請聯絡老師修正');location.href=\"RollCall.php?ClassEng=".$_POST['ClassEng']."&Class=".$_POST['Class']."&Week=".$_POST['Week']."&CardID=".$StudentID."\";</script>";		
 			else{//有學生 有修課 寫入資料庫紀錄點名
-				$sql_query_StudyCalss="UPDATE `".$_POST['ClassEng']."` SET `StudentID`=\"".$StudentID."\",`Week".substr($_POST['Week'],3,-3)."`=\"Y\"";
+				$sql_query_StudyCalss="UPDATE `".$_POST['ClassEng']."` SET `Week".substr($_POST['Week'],3,-3)."`=\"Y\" WHERE `StudentID`=\"".$StudentID."\"";
 				//echo $sql_query_StudyCalss;
-				mysqli_query($db_link_rollcall,$sql_query_StudyCalss) or die("查詢失敗");
+				mysqli_query($db_link_rollcall,$sql_query_StudyCalss) or die("查詢失敗3");
 			}
 		}
 		//跳轉回本來點名頁面
