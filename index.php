@@ -266,11 +266,11 @@
 							<div class="counter counter-color-two">
 								<?php 
 									if($today>0)//未來周
-										echo "<h1 class=\"timer\">".(70-$ThisWeek)."</h1><h3>小時</h3>";//未來周可以直接用70去扣全周預約時數($ThisWeek)
+										echo "<h1 class=\"timer\">".(77-$ThisWeek)."</h1><h3>小時</h3>";//未來周可以直接用77去扣全周預約時數($ThisWeek)
 									else if($today<0)//過去周
 										echo "<h1 class=\"timer\">0</h1><h3>小時</h3>";//過去不可預約 0小時
 									else//本周
-										echo "<h1 class=\"timer\">".(70-($week+1)*10-$FeaTureWeek)."</h1><h3>小時</h3>";//本周須扣除已過的日子($FeaTureWeek)
+										echo "<h1 class=\"timer\">".(77-($week+1)*10-$FeaTureWeek)."</h1><h3>小時</h3>";//本周須扣除已過的日子($FeaTureWeek)
 								?>
 								<p>本周尚可預約時段</p>
 							</div>
