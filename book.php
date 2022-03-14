@@ -160,7 +160,7 @@
 									?>
 								</tr>
 								<?php 
-									for($Time=8;$Time<18;$Time++){
+									for($Time=8;$Time<=18;$Time++){
 										echo "<tr>";
 										echo "<th>$Time:10~".($Time+1).":00</th>";
 										//SELECT * FROM `Appointment` WHERE `_ID`="20211207_01"
@@ -233,6 +233,7 @@
 												<option value="C311">C311</option>
 												<option value="C419">C419</option>
 												<option value="C506">C506</option>
+												<option value="其他">其他</option>
 											<?php
 												if ($_COOKIE['Bear-Interview_Status']=="管理員"){//增加老師才可以選的選項
 													echo "<option value=\"不在學校\">不在學校</option>";

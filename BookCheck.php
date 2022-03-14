@@ -11,7 +11,7 @@
 			echo"<script  language=\"JavaScript\">alert('出現異常登入情形!請重新登入不好意思');location.href=\"logout.php\";</script>";
 		else
 		{
-			for($Time=8;$Time<18;$Time++){//一天看十個格子
+			for($Time=8;$Time<=18;$Time++){//一天看十個格子
 				for($tmp=(-$week);$tmp<7-$week;$tmp++){//今天前本周內
 					$NowFind=date("Ymd",strtotime("+".($today+$tmp)." day"))."_".str_pad(($Time-7),2,"0",STR_PAD_LEFT);
 					$DateTime=date("Y-m-d",strtotime("+".($today+$tmp)." day"))." ".str_pad(($Time),2,"0",STR_PAD_LEFT).":00:00";

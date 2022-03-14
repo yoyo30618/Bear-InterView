@@ -168,7 +168,7 @@
 									?>
 								</tr>
 								<?php 
-									for($Time=8;$Time<18;$Time++){//動態生成儲存格並查詢
+									for($Time=8;$Time<=18;$Time++){//動態生成儲存格並查詢
 										echo "<tr>";
 											echo "<th>$Time:10~".($Time+1).":00</th>";
 											for($tmp=(-$week);$tmp<7-$week;$tmp++){//由本日星期推斷偏差日期
