@@ -62,7 +62,7 @@
 			}
 			$Cname=$_SESSION['Bear-Interview_Account'];
 			sendmail($RegTime,$Cname);
-			echo"<script  language=\"JavaScript\">alert('".$RegTime."');location.href=\"book.php\";</script>";
+			echo"<script  language=\"JavaScript\">alert('已預約成功，敬請等待老師審核');location.href=\"book.php\";</script>";
 		}
 	}
 	else//不當路徑進入
