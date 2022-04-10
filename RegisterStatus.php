@@ -130,11 +130,12 @@
 							</tr>
 								<?php
 									$nowcolor="lightblue";//奇數時段顏色
-									$sql_query_Count="Select Count(*) from AccountTable where 1";							
+									$sql_query_Count="Select Count(*) from AccountTable where Status=\"審核中\"";							
 									$Count_result=mysqli_query($db_link,$sql_query_Count) or die("查詢失敗");
 									$NowPage=1;
-									while($row=mysqli_fetch_array($Count_result))//無條件進位，產生頁碼(共有幾頁)
+									while($row=mysqli_fetch_array($Count_result)){//無條件進位，產生頁碼(共有幾頁)
 										$DataLine=(int)(($row[0]+9)/10);//+9為了進位
+									}
 									if($DataLine==0)$DataLine=1;//如果沒資料也要有一頁
 									if(isset($_POST['Pge'])){
 										if($_POST['Pge']=="第一頁") $NowPage=1;
