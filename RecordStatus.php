@@ -135,7 +135,8 @@
 								<?php
 									$nowcolor="pink";//奇數時段顏色
 									$nowdate="";
-									$sql_query_Count="Select Count(*) from Appointment where 1";							
+									/*僅查詢未來紀錄*/
+									$sql_query_Count="Select Count(*) from Appointment where DataTime>=now()";							
 									$Count_result=mysqli_query($db_link,$sql_query_Count) or die("查詢失敗");
 									$NowPage=1;
 									while($row=mysqli_fetch_array($Count_result))//無條件進位，產生頁碼(共有幾頁)
@@ -148,7 +149,10 @@
 									}
 									$FirstData=(int)(($NowPage-1)*10);
 									//資料撈取
-									$sql_query_Record="SELECT * FROM Appointment where 1 order by `Status` ASC , `DataTime` ASC limit  $FirstData, 10";
+									/*新款排序 審核中>通過>未通過,且不顯示過去*/
+									$sql_query_Record="SELECT * FROM `Appointment` WHERE `DataTime`>=now() AND Status=\"審核中\" UNION ALL SELECT * FROM `Appointment` WHERE `DataTime`>=now() AND Status=\"通過!\" UNION ALL SELECT * FROM `Appointment` WHERE `DataTime`>=now() AND Status=\"未通過\" limit  $FirstData, 10";
+									/*舊款排序，全排 依照狀態排序(審核中>未通過>通過!)*/
+									//$sql_query_Record="SELECT * FROM Appointment where 1 order by `Status` ASC , `DataTime` ASC limit  $FirstData, 10";
 									//$sql_query_Record="SELECT * FROM Appointment where 1 order by `_ID` desc limit  $FirstData, 10";
 									$Record_result=mysqli_query($db_link,$sql_query_Record) or die("查詢失敗");
 									while($row=mysqli_fetch_array($Record_result))
