@@ -55,7 +55,7 @@
 			</div>		
 			<!--START NAVBAR-->
 			<div class="navbar navbar-default navbar-fixed-top menu-top menu_dropdown">
-				<div class="container" style="width:100%;">
+				<div class="container">
 					<div class="navbar-header">
 						<button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
 							<span class="sr-only"></span>
@@ -76,6 +76,12 @@
 									if(isset($_COOKIE['Bear-Interview_Status'])&&($_COOKIE['Bear-Interview_Status'])=="管理員"){
 										echo "<li><a href=\"RecordStatus.php\">審核申請</a></li>";
 										echo "<li><a href=\"RegisterStatus.php\">註冊申請</a></li>";
+										echo "<li><a>課程點名/修正</a>";
+											echo "<ul class=\"sub-menu\">";
+												echo "<li><a href=\"RollCall.php\">課程點名</a></li>";
+												echo "<li><a href=\"StuStatus.php\">學生資訊修正</a></li>";
+											echo "</ul>";
+										echo "</li>";
 									}
 									if(isset($_COOKIE['Bear-Interview_Account']))//如果有設定cookie代表已經登入
 										echo "<li><a href=\"logout.php\">登出</a></li>";
@@ -113,7 +119,7 @@
 			<!-- 中央重點 -->
 			<section class="service" style="align:center;width: 100%;">			
 				<div class="container" style="align:center;width: 100%;;">
-					<div class="row text-center" style="margin:0px auto;align:center;width: 80%;">
+					<div class="row text-center" style="margin:0px auto;align:center;width: 90%;">
 						<div class="section-title">
 							<h1>請老師/助教運用此頁面快速進行點名</h1>
 							<span></span>
@@ -144,8 +150,11 @@
 													<?php 
 													for($i=1;$i<=7;$i++){
 														if($row[$i]!=""){	
-															if(!strcmp($_GET['ClassEng'],($class[$i]."_".$row[0])))
-																echo "<option  selected value=".$class[$i]."_".$row[0].">".$row[$i]."</option>";
+															if(isset($_GET['ClassEng'])){
+																if(!strcmp($_GET['ClassEng'],($class[$i]."_".$row[0])))
+																	echo "<option  selected value=".$class[$i]."_".$row[0].">".$row[$i]."</option>";
+																else
+																	echo "<option value=".$class[$i]."_".$row[0].">".$row[$i]."</option>";}
 															else
 																echo "<option value=".$class[$i]."_".$row[0].">".$row[$i]."</option>";
 														}else break;

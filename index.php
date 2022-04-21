@@ -70,6 +70,12 @@
 									if(isset($_COOKIE['Bear-Interview_Status'])&&($_COOKIE['Bear-Interview_Status'])=="管理員"){
 										echo "<li><a href=\"RecordStatus.php\">審核申請</a></li>";
 										echo "<li><a href=\"RegisterStatus.php\">註冊申請</a></li>";
+										echo "<li><a>課程點名/修正</a>";
+											echo "<ul class=\"sub-menu\">";
+												echo "<li><a href=\"RollCall.php\">課程點名</a></li>";
+												echo "<li><a href=\"StuStatus.php\">學生資訊修正</a></li>";
+											echo "</ul>";
+										echo "</li>";
 									}
 									if(isset($_COOKIE['Bear-Interview_Account'])){//如果有設定cookie代表已經登入
 										echo "<li><a>登出/連動</a>";

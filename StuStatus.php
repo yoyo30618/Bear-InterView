@@ -4,6 +4,7 @@
 		<?php 
 			session_start();
 			require("conn_mysql.php");
+			require("conn_mysql_rollcall.php");
 			if(!isset($_COOKIE['Bear-Interview_Account'])){//未登入 跳轉離開
 				header('refresh:0;url=index.php');
 			}
@@ -101,10 +102,10 @@
 					<div class="container">
 						<div class="col-md-10 col-md-offset-1 col-xs-12 text-center">
 							<div class="section-top-title wow fadeInRight" data-wow-duration="1s" data-wow-delay="0.3s" data-wow-offset="0">
-								<h1>個人狀態</h1>
+								<h1>學生資訊修正</h1>
 								<ol class="breadcrumb">
 								<li><a href="index.php">首頁</a></li>
-								<li class="active">個人狀態</li>
+								<li class="active">學生資訊修正</li>
 								</ol>
 							</div>
 						</div>
@@ -129,41 +130,95 @@
 			<section class="service-promotion section-padding">
 				<div class="container">
 					<div class="row text-center">
+						<div class="col-md-4 col-sm-4 col-xs-12 wow fadeInLeft" data-wow-duration="1s" data-wow-delay="0.3s" data-wow-offset="0">
+							<div class="single_service_promotion">
+								<h1>學號/卡號修改</h1>
+								<br><br>
+								<form class="form" name="ChangeStuCard" method="post" action="StuStatusChange.php">
+									<input type="text" name="StuID" class="form-control" placeholder="請輸入欲修改卡號之學生學號"required="required"><br>
+									<input type="text" name="StuCard" class="form-control" placeholder="請輸入新卡號(十碼)"required="required"><br>
+									<input type="submit" value="卡號修改" name="ChangeStuStatus" id="submitButton" class="btn-light-bg" title="卡號修改"/><br>
+								</form>
+							</div>
+						</div>
 						<div class="col-md-4 col-sm-4 col-xs-12 wow fadeInLeft" data-wow-duration="1s" data-wow-delay="0.2s" data-wow-offset="0">
 							<div class="single_service_promotion">
-								<h1>個人資料</h1>
-								<p>
-									您的帳號：<?php echo $Account;?><br>
-									身分狀態：<?php echo $Stauts;?><br>
-									使用者名稱：<?php echo $Name;?><br>
-									登記信箱：<?php echo $EMail;?><br>
-								</p>
+								<h1>新增課程資訊</h1>
+								<form class="form" name="CreateClass" method="post" action="StuStatusChange.php">
+									<select style="font-size:20px;">
+										<option>課程開設學期</option>
+										<?php
+											for($i=109;$i<=113;$i++){
+										?>
+											<optgroup label=<?php echo $i?>>
+												<option value=<?php echo $i."1"?>><?php echo $i."1"?></option>
+												<option value=<?php echo $i."1"?>><?php echo $i."2"?></option>
+											</optgroup>
+										<?php
+											}
+										?>
+									</select>
+									<br>
+									<br>
+									<input type="text" name="ClassName_Cht" class="form-control" placeholder="新課程之中文名稱"required="required"><br>
+									<input type="text" name="ClassName_Eng" class="form-control" placeholder="新課程之英文名稱"required="required"><br>
+									<input type="submit" value="新增課程" name="CreateClass" id="submitButton" class="btn-light-bg" title="新增課程"/><br>
+								</form>
 							</div>
 						</div>
 						<div class="col-md-4 col-sm-4 col-xs-12 wow fadeInLeft" data-wow-duration="1s" data-wow-delay="0.3s" data-wow-offset="0">
 							<div class="single_service_promotion">
-								<h1>密碼修改</h1>
-								<form class="form" name="ChangePWD" method="post" action="ChangePassword.php">
-									<p>目前密碼：<?php echo $Password;?></p>
-									<input type="password" name="NewPassword1" class="form-control" placeholder="輸入新密碼"required="required"><br>
-									<input type="password" name="NewPassword2" class="form-control" placeholder="二次確認新密碼"required="required"><br>
-									<input type="submit" value="密碼修改" name="ChangePWD" id="submitButton" class="btn-light-bg" title="密碼修改"/><br>
+								<h1>課程人員修改</h1>
+								<br><br>
+								<select name="WhatClass" style="font-size:20px;" id="SelectClass">
+									<option>請選擇課程</option>
+									<?php 
+										$sql_query_ClassName="SELECT * FROM `ClassName` ORDER BY `ClassName`.`Semester` DESC";
+										$ClassName_result=mysqli_query($db_link_rollcall,$sql_query_ClassName) or die("查詢失敗");
+										while($row=mysqli_fetch_array($ClassName_result)){
+											if(!strpos($row[0],"Eng")){
+									?>
+												<optgroup label=<?php echo $row[0]?>>
+													<?php 
+													for($i=1;$i<=7;$i++){
+														if($row[$i]!=""){	
+															if(isset($_GET['ClassEng'])){
+																if(!strcmp($_GET['ClassEng'],($class[$i]."_".$row[0])))
+																	echo "<option  selected value=".$class[$i]."_".$row[0].">".$row[$i]."</option>";
+																else
+																	echo "<option value=".$class[$i]."_".$row[0].">".$row[$i]."</option>";}
+															else
+																echo "<option value=".$class[$i]."_".$row[0].">".$row[$i]."</option>";
+														}else break;
+													}
+													?>
+												</optgroup>
+									<?php
+											}
+											else{
+												for($i=1;$i<=7;$i++)
+													$class[$i]=$row[$i];//取得課程英文名稱
+											}
+										}
+									?>
+								</select>
+								<br>
+								<br>
+								<form class="form" name="ChangeStuCard" method="post" action="StuStatusChange.php">
+									<input type="text" name="StuID" class="form-control" placeholder="請輸入欲加入課程的學號/卡號"required="required"><br>
+									<input type="submit" value="新增學生" name="AddStu" id="submitButton" class="btn-light-bg" title="卡號修改"/><br>
 								</form>
-							</div>
-						</div>
-						<div class="col-md-4 col-sm-4 col-xs-12 wow fadeInLeft" data-wow-duration="1s" data-wow-delay="0.4s" data-wow-offset="0">
-							<div class="single_service_promotion">
-								<h1>點此與Line連結</h1>
-								<p>還沒想</p>
+								<br>
 							</div>
 						</div>
 					</div>
 				</div>
 			</section>	
+			<!------------------------------------------------------以下待修------------------------------------------------------>
 			<section class="service">			
 				<div class="container">
 					<div class="row text-center">
-						<h1>預約紀錄</h1>
+						<h1>開課資訊</h1>
 						<form class="form" name="BookCancel" method="post" action="BookCancel.php"><!--取消用Form-->
 							<table>
 							<tr>
