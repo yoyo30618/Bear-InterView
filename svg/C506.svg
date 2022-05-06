@@ -1,0 +1,28 @@
+<div style="width:100%;text-align:center;align:center;">
+  <svg width="800" height="300">
+    <?php
+      echo "<a><rect x=\"240\" y=\"5\" width=\"300\" height=\"20\" fill=\"yellow\" stroke=\"black\"></a>";
+      echo "<a><text x=\"375\" y=\"20\">黑板</text></a>";
+      for ( $i=0 ; $i<8 ; $i++ ) {
+        for ( $j=0 ; $j<8 ; $j++ ) {
+          if($j<1&&$i<6){
+            //空位置
+          }        
+          else if($j==7&&$i<5){
+            //空位置
+          }
+          else{
+            $x=80+$i*80;
+            $y=30+$j*30;
+            $txtx=80+$i*80+20;
+            $txty=30+$j*30+20;
+            echo "<a xlink:href=\"http://www.google.com/#$i&$j\">";
+            echo "<rect x=\"$x\" y=\"$y\" width=\"60\" height=\"30\" fill=\"yellow\" stroke=\"black\">";
+            echo "</a>";
+            echo "<a xlink:href=\"http://www.google.com/#$i&$j\"><text x=\"$txtx\" y=\"$txty\">$i,$j</text></a>";
+        }
+      }
+      }
+    ?>
+  </svg>
+</div>

@@ -124,48 +124,66 @@
 							<h1>請老師/助教運用此頁面快速進行點名</h1>
 							<span></span>
 						</div>
+						<?php //查找教室
+							$ClassRoom="";
+							$sql_query_ClassName="SELECT * FROM `ClassName` ORDER BY `ClassName`.`Semester` ASC";
+							$ClassName_result=mysqli_query($db_link_rollcall,$sql_query_ClassName) or die("查詢失敗");
+							while($row=mysqli_fetch_array($ClassName_result)){
+								if(isset($_GET['ClassEng'])){
+									if(!strcmp($_GET['ClassEng'],($row[1]."_".$row[3]))){
+										$ClassRoom=$row[4];
+										break;
+									}
+								}
+							}
+							echo "<input type=\"hidden\" id=\"ClassRoom\" name=\"ClassRoom\" value=\"".$ClassRoom."\"></input>"
+						?>
 						<table>
 							<form class="form" name="RollCall" method="post" action="RollCallCheck.php">
 								<?php
-								if(isset($_GET['Class'])&&isset($_GET['Week']))
-									echo "<h3>目前所選課程：".$_GET['Class'].",目前所選週次：".$_GET['Week']."</h3>";
+								if(isset($_GET['ClassCht'])&&isset($_GET['Week']))
+									echo "<h3>目前所選課程：".$_GET['ClassCht'].",目前所選週次：".$_GET['Week'].",教室於：".$ClassRoom."</h3>";
 								?>
-								<input type="password" name="CardID" id="inputtext" placeholder ="輸入卡號/學號"></input><br><br>
+								<input type="text" name="CardID" id="inputtext" placeholder ="輸入卡號/學號"></input><br><br>
 								<?php
-								if(isset($_GET['ClassEng'])&&isset($_GET['Week'])&&isset($_GET['Class'])){
+								if(isset($_GET['ClassEng'])){
 									echo "<input type=\"hidden\" name=\"ClassEng\" value=\"".$_GET['ClassEng']."\"></input>";
+								}
+								if(isset($_GET['ClassRoom'])){
+									echo "<input type=\"hidden\" name=\"ClassRoom\" value=\"".$_GET['ClassRoom']."\"></input>";
+								}
+								if(isset($_GET['Week'])){
 									echo "<input type=\"hidden\" name=\"Week\" value=\"".$_GET['Week']."\"></input>";
-									echo "<input type=\"hidden\" name=\"Class\" value=\"".$_GET['Class']."\"></input>";
+								}
+								if(isset($_GET['ClassCht'])){
+									echo "<input type=\"hidden\" name=\"ClassCht\" value=\"".$_GET['ClassCht']."\"></input>";
 								}
 								?>
 								<select name="WhatClass" style="font-size:20px;" id="SelectClass">
 									<option>請選擇課程</option>
 									<?php 
-										$sql_query_ClassName="SELECT * FROM `ClassName` ORDER BY `ClassName`.`Semester` DESC";
+										$sql_query_ClassName="SELECT * FROM `ClassName` ORDER BY `ClassName`.`Semester` ASC";
 										$ClassName_result=mysqli_query($db_link_rollcall,$sql_query_ClassName) or die("查詢失敗");
+										$TitleSemester="";
+										$ClassRoom="";
 										while($row=mysqli_fetch_array($ClassName_result)){
-											if(!strpos($row[0],"Eng")){
-									?>
-												<optgroup label=<?php echo $row[0]?>>
-													<?php 
-													for($i=1;$i<=7;$i++){
-														if($row[$i]!=""){	
-															if(isset($_GET['ClassEng'])){
-																if(!strcmp($_GET['ClassEng'],($class[$i]."_".$row[0])))
-																	echo "<option  selected value=".$class[$i]."_".$row[0].">".$row[$i]."</option>";
-																else
-																	echo "<option value=".$class[$i]."_".$row[0].">".$row[$i]."</option>";}
-															else
-																echo "<option value=".$class[$i]."_".$row[0].">".$row[$i]."</option>";
-														}else break;
-													}
-													?>
-												</optgroup>
-									<?php
+											if($TitleSemester!=$row[1]){//如果找到不同學期，新增一標題(開頭)
+												echo "<optgroup label=$row[1]>";
+												$TitleSemester=$row[1];
 											}
-											else{
-												for($i=1;$i<=7;$i++)
-													$class[$i]=$row[$i];//取得課程英文名稱
+											/*塞各學期課程*/
+											if(isset($_GET['ClassEng'])){
+												if(!strcmp($_GET['ClassEng'],($row[1]."_".$row[3]))){
+													echo "<option selected value=".$row[1]."_".$row[3].">".$row[2]."</option>";
+													$ClassRoom=$row[4];
+												}
+												else
+													echo "<option value=".$row[1]."_".$row[3].">".$row[2]."</option>";
+											}
+											else
+												 echo "<option value=".$row[1]."_".$row[3].">".$row[2]."</option>";
+											if($TitleSemester!=$row[1]){//如果找到不同學期，新增一標題(結尾)
+												echo "</optgroup>";
 											}
 										}
 									?>
@@ -181,6 +199,12 @@
 										}
 									?>
 								</select>
+								<?php 
+								if($ClassRoom!="")
+									require("svg/".$ClassRoom.".svg");
+								?>
+
+
 								<br><br><br>
 								<tr>
 									<th>學號</th>
@@ -329,9 +353,10 @@
 				function jumpPage(){
 					var oselClass=document.getElementById("SelectClass");
 					var oselWeek=document.getElementById("SelectWeek");
+					var ClassRoom=document.getElementById("ClassRoom");
 					var newURL="";
 					newURL+="?ClassEng="+oselClass.options [oselClass.selectedIndex].value;
-					newURL+="&Class="+oselClass.options [oselClass.selectedIndex].text;
+					newURL+="&ClassCht="+oselClass.options [oselClass.selectedIndex].text;
 					newURL+="&Week="+oselWeek.options [oselWeek.selectedIndex].text;
 					//把下拉式選單的選擇GET給自己
 					if((oselClass.options [oselClass.selectedIndex].value!="請選擇課程")&&(oselWeek.options [oselWeek.selectedIndex].value!="請選擇週次")){

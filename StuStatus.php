@@ -173,31 +173,25 @@
 								<select name="WhatClass" style="font-size:20px;" id="SelectClass">
 									<option>請選擇課程</option>
 									<?php 
-										$sql_query_ClassName="SELECT * FROM `ClassName` ORDER BY `ClassName`.`Semester` DESC";
+										$sql_query_ClassName="SELECT * FROM `ClassName` ORDER BY `ClassName`.`Semester` ASC";
 										$ClassName_result=mysqli_query($db_link_rollcall,$sql_query_ClassName) or die("查詢失敗");
+										$TitleSemester="";
 										while($row=mysqli_fetch_array($ClassName_result)){
-											if(!strpos($row[0],"Eng")){
-									?>
-												<optgroup label=<?php echo $row[0]?>>
-													<?php 
-													for($i=1;$i<=7;$i++){
-														if($row[$i]!=""){	
-															if(isset($_GET['ClassEng'])){
-																if(!strcmp($_GET['ClassEng'],($class[$i]."_".$row[0])))
-																	echo "<option  selected value=".$class[$i]."_".$row[0].">".$row[$i]."</option>";
-																else
-																	echo "<option value=".$class[$i]."_".$row[0].">".$row[$i]."</option>";}
-															else
-																echo "<option value=".$class[$i]."_".$row[0].">".$row[$i]."</option>";
-														}else break;
-													}
-													?>
-												</optgroup>
-									<?php
+											if($TitleSemester!=$row[1]){//如果找到不同學期，新增一標題(開頭)
+												echo "<optgroup label=$row[1]>";
+												$TitleSemester=$row[1];
 											}
-											else{
-												for($i=1;$i<=7;$i++)
-													$class[$i]=$row[$i];//取得課程英文名稱
+											/*塞各學期課程*/
+											if(isset($_GET['ClassEng'])){
+												if(!strcmp($_GET['ClassEng'],($row[1]."_".$row[3])))
+													echo "<option selected value=".$row[1]."_".$row[3].">".$row[2]."</option>";
+												else
+													echo "<option value=".$row[1]."_".$row[3].">".$row[2]."</option>";
+											}
+											else
+												 echo "<option value=".$row[1]."_".$row[3].">".$row[2]."</option>";
+											if($TitleSemester!=$row[1]){//如果找到不同學期，新增一標題(結尾)
+												echo "</optgroup>";
 											}
 										}
 									?>
