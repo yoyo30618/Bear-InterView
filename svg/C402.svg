@@ -1,0 +1,42 @@
+<svg width="2000" height="400">
+  <?php
+
+    echo "<a><rect x=\"745\" y=\"5\" width=\"200\" height=\"30\" fill=\"yellow\" stroke=\"black\"></a>";
+    echo "<a><text x=\"830\" y=\"25\">黑板</text></a>";
+
+    for ( $i=0 ; $i<7 ; $i++ ) {
+      for ( $j=0 ; $j<7 ; $j++ ) {
+        $x=340+$i*120+10;
+        $y=90+$j*40;
+        $txtx=340+$i*120+60;
+        $txty=90+$j*40+25;
+        //6,10列多空一走道
+        if($i>=3){
+          $x+=40;
+          $txtx+=40;
+        }
+        if($i>=5){
+          $x+=40;
+          $txtx+=40;
+        }
+        //if($j==0&&($i>5&&$i<10)){
+        if($i==0&&($j>1)){
+          //不能坐的位置
+          echo "<a>";
+          echo "<rect x=\"$x\" y=\"$y\" width=\"120\" height=\"40\" fill=\"yellow\" stroke=\"black\">";
+          echo "</a>";
+        }
+        else{
+          echo "<a xlink:href=\"RollCall.php?ClassEng=".$_GET['ClassEng']."&ClassCht=".$_GET['ClassCht']."&Week=".$_GET['Week']."&Seat=".$i."\">";
+          echo "<rect x=\"$x\" y=\"$y\" width=\"120\" height=\"40\" fill=\"yellow\" stroke=\"black\">";
+          echo "</a>";
+          echo "<a xlink:href=\"RollCall.php?ClassEng=".$_GET['ClassEng']."&ClassCht=".$_GET['ClassCht']."&Week=".$_GET['Week']."&Seat=".$i."\"><text x=\"$txtx\" y=\"$txty\">$i,$j</text></a>";
+        }
+      }
+    }
+    echo "<a>";
+    echo "<rect x=\"1150\" y=\"50\" width=\"120\" height=\"40\" fill=\"yellow\" stroke=\"black\">";
+    echo "</a>";
+    echo "<a><text x=\"1185\" y=\"75\">教師機</text></a>";
+  ?>
+</svg>

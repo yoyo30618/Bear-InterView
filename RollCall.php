@@ -136,11 +136,30 @@
 									}
 								}
 							}
-							echo "<input type=\"hidden\" id=\"ClassRoom\" name=\"ClassRoom\" value=\"".$ClassRoom."\"></input>"
 						?>
+					
 						<table>
 							<form class="form" name="RollCall" method="post" action="RollCallCheck.php">
 								<?php
+								
+								echo "<input type=\"hidden\" id=\"ClassRoom\" name=\"ClassRoom\" value=\"".$ClassRoom."\"></input>";
+								if(isset($_GET['Seat'])){
+									echo "<h3 style=\"color:red;\">選定座位".$_GET['Seat']."</h3>";
+									echo "<input type=\"hidden\" id=\"Seat\" name=\"Seat\" value=\"".$_GET['Seat']."\"></input>";
+								}
+								else{
+									echo "<h3 style=\"color:red;\">請先選擇座位後，輸入卡號/學號點名</h3>";
+								}
+								if(isset($_GET['NeedSeat'])){
+									if($_GET['NeedSeat']=="1")
+										echo "<input type=\"checkbox\" checked id=\"NeedSeat\" name=\"NeedSeat\"><span  style=\"font-size:150%;\">本節課不需要紀錄座位</span></input>";
+									else
+										echo "<input type=\"checkbox\" id=\"NeedSeat\" name=\"NeedSeat\"><span  style=\"font-size:150%;\">本節課不需要紀錄座位</span></input>";
+								}
+								else{
+									echo "<input type=\"checkbox\" id=\"NeedSeat\" name=\"NeedSeat\"><span  style=\"font-size:150%;\">本節課不需要紀錄座位</span></input>";
+								}
+								echo "<br>";
 								if(isset($_GET['ClassCht'])&&isset($_GET['Week']))
 									echo "<h3>目前所選課程：".$_GET['ClassCht'].",目前所選週次：".$_GET['Week'].",教室於：".$ClassRoom."</h3>";
 								?>
@@ -200,8 +219,17 @@
 									?>
 								</select>
 								<?php 
-								if($ClassRoom!="")
-									require("svg/".$ClassRoom.".svg");
+								/*導入教室座位svg*/
+								if($ClassRoom!=""){
+									$error=include("svg/".$ClassRoom.".svg");
+									if($error==1){//正確讀入教室座位
+										echo "<h3 style=\"color:red;\">請先選擇座位後，輸入卡號/學號點名</h3>";
+									}
+									else{
+										echo "<h3 style=\"color:red;\">此教室尚無座位圖，敬請直接輸入卡號/學號點名</h3>";
+										echo "<input type=\"hidden\" name=\"NeedSeat\" value=\"1\"></input>";
+									}
+								}
 								?>
 
 
@@ -225,7 +253,7 @@
 											echo "<th>$row[1]</th>";
 											for($week=2;$week<=21;$week++){//學號+姓名+20周
 												if($row[$week]!="")
-													echo "<th>Y</th>";
+													echo "<th>".$row[$week]."</th>";
 												else
 												echo "<th></th>";
 											}

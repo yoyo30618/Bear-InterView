@@ -1,13 +1,13 @@
-<svg width="2000" height="500">
+<svg width="2000" height="600">
   <?php
-    echo "<a><rect x=\"680\" y=\"5\" width=\"280\" height=\"30\" fill=\"yellow\" stroke=\"black\"></a>";
-    echo "<a><text x=\"805\" y=\"25\">黑板</text></a>";
+    echo "<a><rect x=\"670\" y=\"5\" width=\"280\" height=\"30\" fill=\"yellow\" stroke=\"black\"></a>";
+    echo "<a><text x=\"790\" y=\"25\">黑板</text></a>";
     for ( $i=0 ; $i<4 ; $i++ ) {
       for ( $j=0 ; $j<13 ; $j++ ) {
-        $x=550+$i*120+10;
-        $y=100+$j*40;
-        $txtx=550+$i*120+60;
-        $txty=100+$j*40+25;
+        $x=540+$i*120+10;
+        $y=50+$j*40;
+        $txtx=540+$i*120+60;
+        $txty=50+$j*40+25;
         //2列多空一走道
         if($i>=2){
           $x+=40;
@@ -17,12 +17,6 @@
           //教師座位 後面額外畫
         }
         else{
-          /*
-          ?ClassEng=1101_Meeting
-          &ClassCht=專題研討
-          &Week=第15週
-          &Seat=3
-          */
           echo "<a xlink:href=\"RollCall.php?ClassEng=".$_GET['ClassEng']."&ClassCht=".$_GET['ClassCht']."&Week=".$_GET['Week']."&Seat=".$i."\">";
           echo "<rect x=\"$x\" y=\"$y\" width=\"120\" height=\"40\" fill=\"yellow\" stroke=\"black\">";
           echo "</a>";
@@ -31,8 +25,8 @@
       }
     }
     echo "<a>";
-    echo "<rect x=\"560\" y=\"50\" width=\"120\" height=\"40\" fill=\"yellow\" stroke=\"black\">";
+    echo "<rect x=\"550\" y=\"50\" width=\"120\" height=\"40\" fill=\"yellow\" stroke=\"black\">";
     echo "</a>";
-    echo "<a><text x=\"595\" y=\"75\">教師機</text></a>";
+    echo "<a><text x=\"585\" y=\"75\">教師機</text></a>";
   ?>
 </svg>
