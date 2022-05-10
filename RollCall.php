@@ -141,7 +141,6 @@
 						<table>
 							<form class="form" name="RollCall" method="post" action="RollCallCheck.php">
 								<?php
-								
 								echo "<input type=\"hidden\" id=\"ClassRoom\" name=\"ClassRoom\" value=\"".$ClassRoom."\"></input>";
 								if(isset($_GET['Seat'])){
 									echo "<h3 style=\"color:red;\">選定座位".$_GET['Seat']."</h3>";
