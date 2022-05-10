@@ -10,6 +10,7 @@
         $y=90+$j*40;
         $txtx=500+$i*120+60;
         $txty=90+$j*40+25;
+        $SeatNum=$i."-".$j;          
         //6,10列多空一走道
         if($i>=2){
           $x+=40;
@@ -36,12 +37,38 @@
         else if(($j>3&&$j<6&&$i<3) || ($j>3&&$j<6&&$i>4)){
           //空白
         }
+        else if(isset($_GET['Seat'])){
+          if($_GET['Seat']==$SeatNum){
+            echo "<a>";
+            echo "<rect x=\"$x\" y=\"$y\" width=\"120\" height=\"40\" fill=\"lightblue\" stroke=\"black\">";
+            echo "</a>";
+            echo "<a><text x=\"$txtx\" y=\"$txty\">$SeatNum</text></a>";
+          }
+          else if(in_array($SeatNum,$SeatHasPeo)){
+            echo "<a>";
+            echo "<rect x=\"$x\" y=\"$y\" width=\"120\" height=\"40\" fill=\"red\" stroke=\"black\">";
+            echo "</a>";
+            echo "<a><text x=\"$txtx\" y=\"$txty\">$SeatNum</text></a>";
+          }
+          else{
+            echo "<a xlink:href=\"RollCall.php?ClassEng=".$_GET['ClassEng']."&ClassCht=".$_GET['ClassCht']."&Week=".$_GET['Week']."&Seat=".$SeatNum."\">";
+            echo "<rect x=\"$x\" y=\"$y\" width=\"120\" height=\"40\" fill=\"yellow\" stroke=\"black\">";
+            echo "</a>";
+            echo "<a xlink:href=\"RollCall.php?ClassEng=".$_GET['ClassEng']."&ClassCht=".$_GET['ClassCht']."&Week=".$_GET['Week']."&Seat=".$SeatNum."\"><text x=\"$txtx\" y=\"$txty\">$SeatNum</text></a>";
+          }
+        }
+        else if(in_array($SeatNum,$SeatHasPeo)){
+          echo "<a>";
+          echo "<rect x=\"$x\" y=\"$y\" width=\"120\" height=\"40\" fill=\"red\" stroke=\"black\">";
+          echo "</a>";
+          echo "<a><text x=\"$txtx\" y=\"$txty\">$SeatNum</text></a>";
+        }
         else{
-          echo "<a xlink:href=\"RollCall.php?ClassEng=".$_GET['ClassEng']."&ClassCht=".$_GET['ClassCht']."&Week=".$_GET['Week']."&Seat=".$i."\">";
+          echo "<a xlink:href=\"RollCall.php?ClassEng=".$_GET['ClassEng']."&ClassCht=".$_GET['ClassCht']."&Week=".$_GET['Week']."&Seat=".$SeatNum."\">";
           echo "<rect x=\"$x\" y=\"$y\" width=\"120\" height=\"40\" fill=\"yellow\" stroke=\"black\">";
           echo "</a>";
-          echo "<a xlink:href=\"RollCall.php?ClassEng=".$_GET['ClassEng']."&ClassCht=".$_GET['ClassCht']."&Week=".$_GET['Week']."&Seat=".$i."\"><text x=\"$txtx\" y=\"$txty\">$i,$j</text></a>";
-        }
+          echo "<a xlink:href=\"RollCall.php?ClassEng=".$_GET['ClassEng']."&ClassCht=".$_GET['ClassCht']."&Week=".$_GET['Week']."&Seat=".$SeatNum."\"><text x=\"$txtx\" y=\"$txty\">$SeatNum</text></a>";
+        }	
       }
     }
     echo "<a>";

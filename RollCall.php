@@ -221,6 +221,7 @@
 								<?php 
 								/*導入教室座位svg*/
 								if($ClassRoom!=""){
+									include("CheckSeat.php");//查詢坐人座位，存入預存陣列
 									$error=include("svg/".$ClassRoom.".svg");
 									if($error==1){//正確讀入教室座位
 										echo "<h3 style=\"color:red;\">請先選擇座位後，輸入卡號/學號點名</h3>";
