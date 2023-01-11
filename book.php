@@ -27,17 +27,17 @@
 		<link rel="stylesheet" href="assets/css/switcher/switcher.css"> 	
 		<link rel="stylesheet" href="assets/css/switcher/style1.css" id="colors">	
 		<style>
-		table{
-		  width:100%;
-		  border-collapse: collapse;
-		}
-		th, td {
-		  border: 1px solid black;
-		  width:10%;
-		  text-align:center;
-		  border-collapse: collapse;
-		  font-size:25px;
-		}
+			table{
+			width:100%;
+			border-collapse: collapse;
+			}
+			th, td {
+			border: 1px solid black;
+			width:10%;
+			text-align:center;
+			border-collapse: collapse;
+			font-size:25px;
+			}
 		</style>
 	</head>
 	
@@ -72,6 +72,7 @@
 									if(isset($_COOKIE['Bear-Interview_Status'])&&($_COOKIE['Bear-Interview_Status'])=="管理員"){
 										echo "<li><a href=\"RecordStatus.php\">審核申請</a></li>";
 										echo "<li><a href=\"RegisterStatus.php\">註冊申請</a></li>";
+										echo "<li><a href=\"BulkImport.php\">批量匯入</a></li>";
 										echo "</li>";
 									}
 									if(isset($_COOKIE['Bear-Interview_Account']))//如果有設定cookie代表已經登入
@@ -89,7 +90,7 @@
 						</nav>
 					</div> 
 				</div>
-			</div> 	
+			</div> 		
 			<!--中上橫幅-->
 			<section class="section-top" style="background-image: url(assets/img/bg/section-bg.jpg);  background-size:cover; background-position: center center;background-attachment:fixed;">
 				<div class="overlay">

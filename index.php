@@ -1,6 +1,5 @@
 <!DOCTYPE html>
 <html lang="en">
-
 	<head>
 		<?php 
 			session_start();
@@ -25,17 +24,17 @@
 		<link rel="stylesheet" href="assets/css/switcher/switcher.css"> 	
 		<link rel="stylesheet" href="assets/css/switcher/style1.css" id="colors">	
 		<style>
-		table{
-		  width:100%;
-		  border-collapse: collapse;
-		}
-		th, td {
-		  border: 1px solid black;
-		  width:10%;
-		  text-align:center;
-		  border-collapse: collapse;
-		  font-size:25px;
-		}
+			table{
+			width:100%;
+			border-collapse: collapse;
+			}
+			th, td {
+			border: 1px solid black;
+			width:10%;
+			text-align:center;
+			border-collapse: collapse;
+			font-size:25px;
+			}
 		</style>
 	</head>
 	
@@ -70,23 +69,11 @@
 									if(isset($_COOKIE['Bear-Interview_Status'])&&($_COOKIE['Bear-Interview_Status'])=="管理員"){
 										echo "<li><a href=\"RecordStatus.php\">審核申請</a></li>";
 										echo "<li><a href=\"RegisterStatus.php\">註冊申請</a></li>";
+										echo "<li><a href=\"BulkImport.php\">批量匯入</a></li>";
 										echo "</li>";
 									}
-									if(isset($_COOKIE['Bear-Interview_Account'])){//如果有設定cookie代表已經登入
-										echo "<li><a>登出/連動</a>";
-											echo "<ul class=\"sub-menu\">";
-												echo "<li><a href=\"logout.php\">登出</a></li>";
-												?>
-													<form id="form1" action="connectline.php" method="post">
-														<a style="color:#333 !important;"href="javascript:;" onclick="document.getElementById('form1').submit();">連動你的Line!</a>
-														<input type="hidden" name="Acc" value=<?php echo $_COOKIE['Bear-Interview_Account'] ?>>
-													</form>
-												<?php
-												echo "</li>";
-											echo "</ul>";
-										echo "</li>";
-									}
-									
+									if(isset($_COOKIE['Bear-Interview_Account']))//如果有設定cookie代表已經登入
+										echo "<li><a href=\"logout.php\">登出</a></li>";
 									else{//尚未登入則顯示登入與註冊按鈕
 										echo "<li><a>登入/註冊</a>";
 											echo "<ul class=\"sub-menu\">";

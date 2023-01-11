@@ -72,6 +72,7 @@
 									if(isset($_COOKIE['Bear-Interview_Status'])&&($_COOKIE['Bear-Interview_Status'])=="管理員"){
 										echo "<li><a href=\"RecordStatus.php\">審核申請</a></li>";
 										echo "<li><a href=\"RegisterStatus.php\">註冊申請</a></li>";
+										echo "<li><a href=\"BulkImport.php\">批量匯入</a></li>";
 										echo "</li>";
 									}
 									if(isset($_COOKIE['Bear-Interview_Account']))//如果有設定cookie代表已經登入

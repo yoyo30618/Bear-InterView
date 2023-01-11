@@ -42,15 +42,6 @@
 	</head>
 	
     <body>
-		<?php
-			//身分不是老師不能看
-			if(isset($_COOKIE['Bear-Interview_Status'])){
-				if($_COOKIE['Bear-Interview_Status']!="管理員")
-					header('refresh:0;url=index.php');
-			}
-			else
-				header('refresh:0;url=index.php');
-		?>
 		<div class="bear">
 			<!--START PRELOADER-->
 			<div class="preloader status">
@@ -81,6 +72,7 @@
 									if(isset($_COOKIE['Bear-Interview_Status'])&&($_COOKIE['Bear-Interview_Status'])=="管理員"){
 										echo "<li><a href=\"RecordStatus.php\">審核申請</a></li>";
 										echo "<li><a href=\"RegisterStatus.php\">註冊申請</a></li>";
+										echo "<li><a href=\"BulkImport.php\">批量匯入</a></li>";
 										echo "</li>";
 									}
 									if(isset($_COOKIE['Bear-Interview_Account']))//如果有設定cookie代表已經登入
@@ -98,7 +90,7 @@
 						</nav>
 					</div> 
 				</div>
-			</div> 	
+			</div> 		
 			<!--中上橫幅-->
 			<section class="section-top" style="background-image: url(assets/img/bg/section-bg.jpg);  background-size:cover; background-position: center center;background-attachment:fixed;">
 				<div class="overlay">

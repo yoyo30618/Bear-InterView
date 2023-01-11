@@ -72,6 +72,7 @@
 									if(isset($_COOKIE['Bear-Interview_Status'])&&($_COOKIE['Bear-Interview_Status'])=="管理員"){
 										echo "<li><a href=\"RecordStatus.php\">審核申請</a></li>";
 										echo "<li><a href=\"RegisterStatus.php\">註冊申請</a></li>";
+										echo "<li><a href=\"BulkImport.php\">批量匯入</a></li>";
 										echo "</li>";
 									}
 									if(isset($_COOKIE['Bear-Interview_Account']))//如果有設定cookie代表已經登入
@@ -148,8 +149,12 @@
 						</div>
 						<div class="col-md-4 col-sm-4 col-xs-12 wow fadeInLeft" data-wow-duration="1s" data-wow-delay="0.4s" data-wow-offset="0">
 							<div class="single_service_promotion">
-								<h1>點此與Line連結</h1>
-								<p>還沒想</p>
+								<h1>
+									<form id="form1" action="connectline.php" method="post">
+										<a style="color:#333 !important;"href="javascript:;" onclick="document.getElementById('form1').submit();">連動你的Line!</a>
+										<input type="hidden" name="Acc" value=<?php echo $_COOKIE['Bear-Interview_Account'] ?>>
+									</form>
+								</h1>
 							</div>
 						</div>
 					</div>
