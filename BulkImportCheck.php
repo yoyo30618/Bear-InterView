@@ -1,9 +1,6 @@
 <?php
 	header("Content-Type:text/html;charset=utf-8");//設定編碼
 	session_start();//開啟session
-	use PHPMailer\PHPMailer\PHPMailer;
-	use PHPMailer\PHPMailer\SMTP;
-	use PHPMailer\PHPMailer\Exception;
 	if(isset($_POST['BulkImport']))//如果是由post進入
 	{
 		if(strtotime($_POST['StartDate'])>strtotime($_POST['EndDate'])){
@@ -16,6 +13,7 @@
 			require("conn_mysql.php");
 							
 			$tpday=strtotime($_POST['StartDate']);
+			$RepeatDay=$_POST['RepeatDay'];
 			$res="";
 			while($tpday<=strtotime($_POST['EndDate'])){
 				$nowAdd=date("Y-m-d",$tpday);
@@ -40,11 +38,13 @@
 						$Venue=$_POST['Venue'];
 						$Teams=$_POST['Teams'];
 						$sql_query_InsertBook="INSERT INTO Appointment(_ID,Account,DataTime,Reason,Venue,Teams,Status,Notice) VALUES ";
-						$sql_query_InsertBook=$sql_query_InsertBook."('$_ID','$Account','$DateTime','$Reason','$Venue','$Teams','通過!','');";
+						$sql_query_InsertBook=$sql_query_InsertBook."('$_ID','$Account','$DateTime','$Reason','$Venue','$Teams','通過!','')";
+						$sql_query_InsertBook=$sql_query_InsertBook."ON DUPLICATE KEY UPDATE `Reason` = '$Reason', `Venue`='$Venue', `Teams`='$Teams', `Status`='通過!', `Notice`='';";
+
 						mysqli_query($db_link,$sql_query_InsertBook) or die("查詢失敗");
 					}
 				}
-				$tpday=strtotime('+7 days',$tpday);
+				$tpday=strtotime('+'.$RepeatDay.' days',$tpday);
 			}
 			if($res==""){
 				$res="完成";

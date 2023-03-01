@@ -163,7 +163,9 @@
 										<option value="17">17</option>
 										<option value="18">18</option>
 										<option value="19">19</option>
-									</select>結束
+									</select>結束<br>
+									<input type='radio' name='RepeatDay' value='1'/> +1日<br>
+									<input type='radio' checked name='RepeatDay' value='7'/> +7日
 								</th>
 								<th>
 									<input required type="text" class="form-control" name="Account" placeholder="登記人" value="<?php echo $_COOKIE['Bear-Interview_Account']?>">

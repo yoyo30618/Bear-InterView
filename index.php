@@ -195,7 +195,7 @@
 														$ThisWeek+=1;//紀錄查詢當周幾小時
 														break;
 													}
-													else if($row[6]=="審核中"){
+													else if($row[6]=="審核中"&&$row[1]==$_COOKIE['Bear-Interview_Account']){//自己的登記 但還沒審核
 														if($tmp==0 && $today==0)//若為當日 當周則黃色
 															echo "<th style=\"background-color:#F5FF53;\">待老師審核</th>";
 														else
